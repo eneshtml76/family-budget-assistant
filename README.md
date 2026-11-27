@@ -1,74 +1,98 @@
-# 💰 Family Budget & Financial Assistant (Full-Stack)
+# Family Budget Assistant
 
-[![License: MIT](https://shields.io)](https://opensource.org)
-[![.NET](https://shields.io)](https://microsoft.com)
-[![JavaScript](https://shields.io)](https://mozilla.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/eneshtml76/family-budget-assistant/tree/v1.1)
+[![Frontend](https://img.shields.io/badge/frontend-GitHub%20Pages-222222.svg)](https://eneshtml76.github.io/family-budget-assistant/)
 
-🌐 **Live Frontend Preview:** [ https://eneshtml76.github.io/family-budget-assistant/]( https://eneshtml76.github.io/family-budget-assistant/)
+A responsive, bilingual family budgeting application for tracking income, expenses, monthly trends, and savings goals. The web app can be installed from supported mobile and desktop browsers as a Progressive Web App (PWA).
 
-A modern, responsive, and bilingual (**EN / TR**) full-stack personal finance and budget management application built with **C# (.NET Web API)**, **Entity Framework Core (SQLite)**, and **Modular Vanilla JavaScript**.
+**Live application:** [eneshtml76.github.io/family-budget-assistant](https://eneshtml76.github.io/family-budget-assistant/)
 
----
+> **Current release: v1.1.** Install the app from a supported browser; a separate App Store or Google Play download is not currently provided. Offline support caches the application shell only. Account, transaction, and savings-goal features require an internet connection.
 
-## ✨ Key Features
+## Features
 
-* **🔐 Secure Authentication & Persistent Sessions:** User registration and login system protected with cryptographic **SHA-256 password hashing** and persistent browser session storage (`localStorage`).
-* **📊 Real-Time Analytics & Charts:** Interactive Income vs. Expense doughnut chart powered by **Chart.js** alongside live balance and summary cards.
-* **📅 Monthly Financial Analysis:** Review monthly income and expenses, compare them with the previous month, see the top spending category, and track the savings rate.
-* **🧾 Transaction Management:** Search and filter transactions by type, category, and date; edit entries and export them as CSV.
-* **🎯 Savings Goals:** Create named savings targets, add contributions, and track remaining amounts and progress.
-* **🌙 Dark Mode:** Switch between light and dark themes; the selected theme is remembered in the browser.
-* **🧾 Spending Categories:** Categorize expenses and review spending totals by category.
-* **🏦 Bank Loan & Installment Simulator:** Calculates exact monthly installments, total payback, and total compound interest cost using standard banking amortization formulas.
-* **👨‍👩‍👧‍👦 Family Budget Guide:** A live 50/30/20 budget plan based on recorded transactions; monthly reports are shown separately.
-* **🛡️ Security First:** Built with DOM XSS protection (`textContent` sanitization), input validation, and user-level data isolation (`UserId` filtering).
-* **🌐 Bilingual Interface:** Instant switching between Turkish (`TR`) and English (`EN`).
+- **Monthly financial overview:** See income, expenses, savings rate, top spending category, and comparison with the previous month.
+- **Transaction management:** Add, edit, search, filter, and export transactions as CSV.
+- **Spending categories:** Organize income and expenses with category totals.
+- **Savings goals:** Set a target, add contributions, and track progress and remaining amounts.
+- **50/30/20 budget guide:** Compare recorded spending with suggested needs, wants, and savings allocations.
+- **Loan simulator:** Estimate monthly payments, total repayment, and interest.
+- **Installable PWA:** Install from supported Android and desktop browsers, or add the site to the iOS/iPadOS Home Screen.
+- **Responsive interface:** Layouts adapt to desktop, tablet, and phone screens.
+- **Light and dark themes:** The selected theme is remembered in the browser.
+- **Turkish and English:** Switch languages from the sign-in screen or dashboard.
 
----
+## Install the app
 
-## 🚀 Sürüm Geçmişi
+The site must be opened over HTTPS to install or use its service worker. GitHub Pages serves the live site over HTTPS.
 
-### v1.0 — Kararlı sürüm (27 Kasım 2026)
+- **Android:** Open the site in a supported browser such as Chrome and choose **Install app** or **Add to Home screen**.
+- **Windows/macOS/Linux:** Open the site in a supported desktop browser and choose **Install app** from the app button or browser menu.
+- **iPhone/iPad:** Open the site in Safari, tap **Share**, then choose **Add to Home Screen**.
 
-- Aylık gelir/gider analizi, önceki ay karşılaştırması ve tasarruf oranı
-- İşlem düzenleme, arama, kategori/tür/tarih filtreleme ve CSV dışa aktarma
-- Araba, tatil ve acil durum birikim hedefleri
-- Koyu tema tercihi ve mobil uyumluluk
-- Uygulama altındaki sürüm geçmişi penceresi
+The install action may not be offered by every browser. Use the instructions above if the in-page install prompt is unavailable. The app shell can open after it has been cached, but signing in and synchronizing financial data still require a network connection.
 
-Gelecek sürüm (`v2.0`) için bildirimler, ayrıntılı grafikler veya yeni kullanıcı özellikleri eklenebilir.
+## Releases and roadmap
 
----
+### v1.1 — Installable web app
 
-## 🛠️ Tech Stack
+- Added a web app manifest, app icon, and service worker for install support and cached app-shell loading.
+- Added browser installation controls and mobile/desktop installation instructions.
+- Added an in-app release history and a versioned product roadmap.
 
-* **Frontend:** HTML5, CSS3 (Glassmorphism UI), Vanilla JavaScript (ES6 Modules), Chart.js
-* **Backend:** C#, ASP.NET Core Web API
-* **Database:** SQLite with Entity Framework Core
+### v1.0 — Budget management foundation
 
----
+- Added monthly analytics, transaction editing and filtering, and CSV export.
+- Added savings goals, dark mode, and responsive dashboard layouts.
 
-## ⚙️ How to Run Locally
+### Planned milestones
 
-### 1. Start the C# Backend API
-```bash
-cd backend/BudgetApi
+Roadmap items are targets, not release commitments; scope may change based on testing and user feedback.
+
+| Version | Planned focus |
+| --- | --- |
+| **v1.2** | Everyday usability improvements, accessibility, and clearer account/data handling |
+| **v1.3** | More detailed reports and user-controlled data backup/restore |
+| **v2.0** | Target final major release: a thoroughly tested, dependable experience for everyday use |
+
+v2.0 is the planned final **major** version, not a promise that development will stop. Bug fixes, compatibility work, and security updates may continue afterward.
+
+## Technology
+
+- **Frontend:** HTML, CSS, and vanilla JavaScript modules
+- **Charts:** Chart.js
+- **Backend:** ASP.NET Core Web API
+- **Database:** SQLite with Entity Framework Core
+- **Hosting:** GitHub Pages (frontend) and Railway (API)
+
+## Run locally
+
+### 1. Start the API
+
+```powershell
+cd backend\BudgetApi
 dotnet run
 ```
-*The API server will start listening on `http://localhost:5098` and automatically generate the `budget.db` SQLite database.*
 
-New transactions receive a creation date for monthly reports and date filters. Existing transactions without a stored date remain available in the transaction list, but are excluded from monthly analysis and date-filtered results.
+The frontend's local API configuration expects the API at `http://localhost:5098`. If your local API uses another port, update `frontend/js/api.js` or configure the local launch URL accordingly. The API creates its SQLite database automatically. Set `BUDGET_DB_PATH` to choose a different database file.
 
-### 2. Start the Frontend
-Open the `frontend` folder using **VS Code Live Server** or run a local Python HTTP server:
-```bash
-cd frontend
-python -m http.server 8080
+### 2. Serve the frontend
+
+From the repository root, run:
+
+```powershell
+python -m http.server 8080 --directory frontend
 ```
-Navigate to `http://localhost:8080` in your browser.
 
----
+Open [http://localhost:8080](http://localhost:8080). `localhost` is treated as a secure context by modern browsers, so the service worker can be tested locally.
 
-## 📄 License
+## Data and privacy
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+Registered account data is handled by the configured API and its SQLite database. Guest-mode data is temporary and is not synchronized. Older transactions that predate transaction dates remain visible, but are excluded from date-based reports and filters because their original dates are unknown.
+
+This project is a personal budgeting tool, not a bank or a regulated financial service. Do not enter bank credentials or use it as a substitute for professional financial advice.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE).

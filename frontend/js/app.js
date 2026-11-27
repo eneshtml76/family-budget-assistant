@@ -23,6 +23,8 @@ const guestBtn = document.getElementById("guestBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const exportButton = document.getElementById("exportButton");
 const exportButtonLabel = document.getElementById("exportButtonLabel");
+const installButton = document.getElementById("installButton");
+const installButtonText = document.getElementById("installButtonText");
 const welcomeUser = document.getElementById("welcomeUser");
 const themeToggleButtons = document.querySelectorAll(".theme-toggle");
 
@@ -114,6 +116,8 @@ let currentTheme = localStorage.getItem("budgetTheme") === "dark" ? "dark" : "li
 
 function applyTheme() {
     document.body.classList.toggle("dark-theme", currentTheme === "dark");
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor.content = currentTheme === "dark" ? "#101713" : "#f5f7f2";
     themeToggleButtons.forEach((button) => {
         button.textContent = currentTheme === "dark" ? "☀️" : "🌙";
         button.setAttribute(
@@ -868,6 +872,9 @@ simResult.innerHTML = '📅 Monthly Payment: ' + monthlyStr + ' TL<br>💰 Total
 function toggleLanguage() {
 currentLang = currentLang === "tr" ? "en" : "tr";
 const isTr = currentLang === "tr";
+document.documentElement.lang = currentLang;
+document.getElementById("appFooterDock").setAttribute("aria-label", isTr ? "Uygulama bağlantıları" : "App links");
+versionBackdrop.setAttribute("aria-label", isTr ? "Sürüm geçmişini kapat" : "Close version history");
 if (languageButton) languageButton.textContent = isTr ? "EN" : "TR";
 if (authLangBtn) authLangBtn.textContent = isTr ? "EN" : "TR";
 if (authTitle) authTitle.textContent = isTr ? "🔐 Hesap Girişi" : "🔐 Account Login";
@@ -950,31 +957,53 @@ if (loanAmountInput) loanAmountInput.placeholder = isTr ? "Kredi Tutarı (Örn: 
 if (loanMonthsInput) loanMonthsInput.placeholder = isTr ? "Vade (Ay - Örn: 24)" : "Term (Months - e.g. 24)";
 if (interestRateInput) interestRateInput.placeholder = isTr ? "Aylık Faiz (%)" : "Monthly Interest (%)";
 if (calcLoanBtn) calcLoanBtn.textContent = isTr ? "Krediyi Hesapla" : "Calculate Loan";
-if (versionButtonText) versionButtonText.textContent = isTr ? "Sürüm 1.0" : "Version 1.0";
+if (versionButtonText) versionButtonText.textContent = isTr ? "Sürüm 1.1" : "Version 1.1";
 document.getElementById("versionEyebrow").textContent = isTr ? "GÜNCELLEME GÜNLÜĞÜ" : "UPDATE LOG";
 document.getElementById("versionModalTitle").textContent = isTr ? "Sürüm geçmişi" : "Version history";
 document.getElementById("releaseStatus").textContent = isTr ? "GÜNCEL" : "CURRENT";
-document.getElementById("releaseTitleV1").textContent = isTr ? "v1.0 · Kararlı sürüm" : "v1.0 · Stable release";
-document.getElementById("releaseDateV1").textContent = isTr ? "27 Kasım 2026" : "November 27, 2026";
-document.getElementById("releaseSummaryV1").textContent = isTr
-    ? "Aile bütçesi uygulaması artık aylık analiz, işlem yönetimi, birikim hedefleri ve koyu temayı birlikte sunuyor."
-    : "The family budget app now includes monthly analysis, transaction management, savings goals, and dark mode.";
-document.getElementById("releaseItemV1a").textContent = isTr
-    ? "Aylık gelir, gider, önceki ay karşılaştırması ve tasarruf oranı"
-    : "Monthly income, expenses, previous-month comparison, and savings rate";
-document.getElementById("releaseItemV1b").textContent = isTr
-    ? "İşlem düzenleme, arama ve tarihe/kategoriye/türe göre filtreleme"
-    : "Transaction editing, search, and date/category/type filters";
-document.getElementById("releaseItemV1c").textContent = isTr
-    ? "Araba, tatil ve acil durum için birikim hedefleri"
-    : "Savings goals for a car, vacation, and emergency fund";
-document.getElementById("releaseItemV1d").textContent = isTr
-    ? "Koyu tema tercihi ve gelişmiş mobil uyumluluk"
-    : "Dark theme preference and improved mobile responsiveness";
-document.getElementById("upcomingLabel").textContent = isTr ? "SONRAKİ SÜRÜM" : "NEXT RELEASE";
-document.getElementById("upcomingText").textContent = isTr
-    ? "v2 için bildirimler, daha ayrıntılı raporlar veya yeni özellikler eklenebilir."
-    : "v2 can include notifications, deeper reports, or additional features.";
+document.getElementById("releaseTitleV11").textContent = isTr
+    ? "v1.1 · Kurulabilir web uygulaması"
+    : "v1.1 · Installable web app";
+document.getElementById("releaseDateV11").textContent = isTr ? "27 Kasım 2026" : "November 27, 2026";
+document.getElementById("releaseSummaryV11").textContent = isTr
+    ? "Uygulamayı desteklenen mobil cihazlara ve bilgisayarlara tarayıcı üzerinden yükleyin."
+    : "Install the app from the browser on supported mobile devices and desktop computers.";
+document.getElementById("releaseItemV11a").textContent = isTr
+    ? "Android ve masaüstü tarayıcılarda ana ekrana/uygulama menüsüne yükleme"
+    : "Install from supported Android and desktop browsers";
+document.getElementById("releaseItemV11b").textContent = isTr
+    ? "iPhone ve iPad için ana ekrana ekleme yönergeleri"
+    : "Add-to-Home-Screen instructions for iPhone and iPad";
+document.getElementById("releaseItemV11c").textContent = isTr
+    ? "Çevrimdışı açılış için önbelleğe alınan uygulama arayüzü"
+    : "A cached app shell for offline launch";
+document.getElementById("previousReleaseStatus").textContent = isTr ? "ÖNCEKİ SÜRÜM" : "PREVIOUS RELEASE";
+document.getElementById("releaseTitleV10").textContent = isTr
+    ? "v1.0 · Bütçe yönetimi"
+    : "v1.0 · Budget management";
+document.getElementById("releaseDateV10").textContent = isTr ? "27 Kasım 2026" : "November 27, 2026";
+document.getElementById("releaseSummaryV10").textContent = isTr
+    ? "Aylık analiz, işlem yönetimi, birikim hedefleri ve koyu tema."
+    : "Monthly analytics, transaction management, savings goals, and dark mode.";
+document.getElementById("roadmapLabel").textContent = isTr ? "ÜRÜN YOL HARİTASI" : "PRODUCT ROADMAP";
+document.getElementById("roadmapV12").textContent = isTr
+    ? "Günlük kullanım iyileştirmeleri ve erişilebilirlik"
+    : "Everyday usability and accessibility improvements";
+document.getElementById("roadmapV13").textContent = isTr
+    ? "Daha kapsamlı raporlar ve veri yedekleme"
+    : "Richer reports and data backup";
+document.getElementById("roadmapV20").textContent = isTr
+    ? "Kapsamlı, güvenilir ana sürüm hedefi"
+    : "Target for a complete, dependable major release";
+document.getElementById("roadmapDisclaimer").textContent = isTr
+    ? "Yol haritası kullanıcı geri bildirimine göre değişebilir. v2.0 son büyük sürüm hedefidir; gerekli bakım ve güvenlik güncellemeleri sonrasında da devam edebilir."
+    : "The roadmap may change based on user feedback. v2.0 is the target final major release; maintenance and security updates may continue afterward.";
+document.getElementById("installHelpTitle").textContent = isTr ? "UYGULAMAYI KURMA" : "HOW TO INSTALL";
+document.getElementById("installHelpText").textContent = isTr
+    ? "Android ve masaüstü: tarayıcıdaki “Uygulamayı yükle” seçeneğini kullanın. iPhone/iPad: Safari’de Paylaş → Ana Ekrana Ekle. Kurulum için internet gerekir. Çevrimdışı açılışta API hesap ve kayıt işlemleri kullanılamaz."
+    : "Android and desktop: use your browser’s Install option. iPhone/iPad: in Safari, tap Share → Add to Home Screen. Installation requires internet. Account and data features need an internet connection.";
+installButtonText.textContent = isTr ? "Uygulamayı yükle" : "Install app";
+installButton.setAttribute("aria-label", isTr ? "Uygulamayı yükle" : "Install app");
 closeVersionButton.setAttribute("aria-label", isTr ? "Kapat" : "Close");
 applyTheme();
 renderCategoryFilterOptions();
@@ -997,6 +1026,7 @@ const versionButtonText = document.getElementById("versionButtonText");
 const versionModal = document.getElementById("versionModal");
 const closeVersionButton = document.getElementById("closeVersionButton");
 const versionBackdrop = document.getElementById("versionBackdrop");
+let pendingInstallPrompt = null;
 
 function openVersionModal() {
     versionModal.classList.remove("hidden");
@@ -1018,5 +1048,56 @@ document.addEventListener("keydown", (event) => {
         closeVersionModal();
     }
 });
+
+function isAppInstalled() {
+    return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+}
+
+if (isAppInstalled()) {
+    installButton.classList.add("hidden");
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    pendingInstallPrompt = event;
+    installButton.classList.remove("hidden");
+});
+
+window.addEventListener("appinstalled", () => {
+    pendingInstallPrompt = null;
+    installButton.classList.add("hidden");
+});
+
+installButton.addEventListener("click", async () => {
+    if (!pendingInstallPrompt) {
+        openVersionModal();
+        document.getElementById("installHelp").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return;
+    }
+
+    try {
+        pendingInstallPrompt.prompt();
+        const choice = await pendingInstallPrompt.userChoice;
+        pendingInstallPrompt = null;
+        if (choice.outcome === "accepted") {
+            installButton.classList.add("hidden");
+            return;
+        }
+    } catch (error) {
+        console.error("App installation prompt failed:", error);
+        pendingInstallPrompt = null;
+    }
+
+    openVersionModal();
+    document.getElementById("installHelp").scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+if ("serviceWorker" in navigator && window.isSecureContext) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+            .catch((error) => console.error("Service worker registration failed:", error));
+    });
+}
 // Start Application
 checkSession();

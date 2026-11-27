@@ -6,8 +6,15 @@
     <meta name="api-base-url" content="https://family-budget-assistant-production.up.railway.app">
     <meta name="theme-color" content="#f5f7f2">
     <meta name="description" content="Aile bütçenizi kolayca takip edin, gelir ve giderlerinizi analiz edin.">
+    <meta name="application-name" content="Aile Bütçe">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Aile Bütçe">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/app-icon-180.png">
     <title>Aile Bütçe Asistanı</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/app-icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -240,10 +247,16 @@
 
     </div>
 
-    <button id="versionButton" class="version-button" type="button" aria-haspopup="dialog">
-        <span class="version-dot" aria-hidden="true"></span>
-        <span id="versionButtonText">Sürüm 1.0</span>
-    </button>
+    <nav id="appFooterDock" class="app-footer-dock" aria-label="Uygulama bağlantıları">
+        <button id="installButton" class="install-button" type="button" aria-label="Uygulamayı yükle">
+            <span aria-hidden="true">↓</span>
+            <span id="installButtonText">Uygulamayı yükle</span>
+        </button>
+        <button id="versionButton" class="version-button" type="button" aria-haspopup="dialog">
+            <span class="version-dot" aria-hidden="true"></span>
+            <span id="versionButtonText">Sürüm 1.1</span>
+        </button>
+    </nav>
 
     <div id="versionModal" class="version-modal hidden" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle">
         <button id="versionBackdrop" class="version-backdrop" type="button" aria-label="Sürüm geçmişini kapat"></button>
@@ -260,23 +273,43 @@
                 <div class="release-heading">
                     <div>
                         <span class="release-status" id="releaseStatus">GÜNCEL</span>
-                        <h3 id="releaseTitleV1">v1.0 · Kararlı sürüm</h3>
+                        <h3 id="releaseTitleV11">v1.1 · Kurulabilir uygulama</h3>
                     </div>
-                    <time id="releaseDateV1" datetime="2026-11-27">27 Kasım 2026</time>
+                    <time id="releaseDateV11" datetime="2026-11-27">27 Kasım 2026</time>
                 </div>
-                <p id="releaseSummaryV1">Aile bütçesi uygulaması artık aylık analiz, işlem yönetimi, birikim hedefleri ve koyu temayı birlikte sunuyor.</p>
+                <p id="releaseSummaryV11">Uygulamayı mobil cihazlara ve bilgisayarlara tarayıcı üzerinden yükleyin.</p>
                 <ul class="release-changes">
-                    <li id="releaseItemV1a">Aylık gelir, gider, önceki ay karşılaştırması ve tasarruf oranı</li>
-                    <li id="releaseItemV1b">İşlem düzenleme, arama ve tarihe/kategoriye/türe göre filtreleme</li>
-                    <li id="releaseItemV1c">Araba, tatil ve acil durum için birikim hedefleri</li>
-                    <li id="releaseItemV1d">Koyu tema tercihi ve gelişmiş mobil uyumluluk</li>
+                    <li id="releaseItemV11a">Android, Windows ve macOS için tarayıcıdan uygulama kurulumu</li>
+                    <li id="releaseItemV11b">iPhone/iPad için ana ekrana ekleme yönergeleri</li>
+                    <li id="releaseItemV11c">Çevrimdışı durumda uygulama arayüzünü açma desteği</li>
                 </ul>
             </article>
 
-            <div id="upcomingRelease" class="upcoming-release">
-                <span id="upcomingLabel">SONRAKİ SÜRÜM</span>
-                <p id="upcomingText">v2 için bildirimler, daha ayrıntılı raporlar veya yeni özellikler eklenebilir.</p>
-            </div>
+            <article class="release-card previous-release">
+                <div class="release-heading">
+                    <div>
+                        <span class="release-status previous-status" id="previousReleaseStatus">ÖNCEKİ SÜRÜM</span>
+                        <h3 id="releaseTitleV10">v1.0 · Bütçe yönetimi</h3>
+                    </div>
+                    <time id="releaseDateV10" datetime="2026-11-27">27 Kasım 2026</time>
+                </div>
+                <p id="releaseSummaryV10">Aylık analiz, işlem yönetimi, birikim hedefleri ve koyu tema eklendi.</p>
+            </article>
+
+            <section class="roadmap-card">
+                <span id="roadmapLabel">ÜRÜN YOL HARİTASI</span>
+                <ul>
+                    <li><strong>v1.2</strong><span id="roadmapV12">Günlük kullanım iyileştirmeleri ve erişilebilirlik</span></li>
+                    <li><strong>v1.3</strong><span id="roadmapV13">Daha kapsamlı raporlar ve veri yedekleme</span></li>
+                    <li><strong>v2.0</strong><span id="roadmapV20">Uzun vadeli hedef: kapsamlı, güvenilir ana sürüm</span></li>
+                </ul>
+                <p id="roadmapDisclaimer">Planlanan özellikler kullanıcı geri bildirimine göre değişebilir. v2.0 son büyük sürüm hedefidir; gerekli bakım ve güvenlik güncellemeleri sonrasında da devam edebilir.</p>
+            </section>
+
+            <section id="installHelp" class="upcoming-release">
+                <span id="installHelpTitle">UYGULAMAYI KURMA</span>
+                <p id="installHelpText">Android ve masaüstü: tarayıcıdaki “Uygulamayı yükle” seçeneğini kullanın. iPhone/iPad: Safari’de Paylaş → Ana Ekrana Ekle. Kurulum için internet gerekir. Çevrimdışı açılışta API hesap ve kayıt işlemleri kullanılamaz.</p>
+            </section>
         </section>
     </div>
 
