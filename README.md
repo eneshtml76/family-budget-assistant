@@ -4,7 +4,7 @@
 [![.NET](https://shields.io)](https://microsoft.com)
 [![JavaScript](https://shields.io)](https://mozilla.org)
 
-🌐 **Live Frontend Preview:** [https://github.io](https://github.io)
+🌐 **Live Frontend Preview:** [https://eneshtml76.github.io/family-budget-assistant/frontend/](https://eneshtml76.github.io/family-budget-assistant/frontend/)
 
 A modern, responsive, and bilingual (**EN / TR**) full-stack personal finance and budget management application built with **C# (.NET Web API)**, **Entity Framework Core (SQLite)**, and **Modular Vanilla JavaScript**.
 
