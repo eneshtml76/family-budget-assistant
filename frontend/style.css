@@ -325,6 +325,27 @@ li {
     font-size: 12px;
     font-weight: 600;
 }
+/* Guest / Quick Demo Mode Button */
+.guest-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 4px;
+}
+
+.guest-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border-color: #facc15;
+}
+
 
 .food-desc {
     font-size: 12px;
