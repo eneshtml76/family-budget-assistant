@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:5098/api";
+const BASE_URL = "https://railway.app";
+
 
 // Register a new user account
 export async function registerUser(username, password) {
@@ -34,6 +35,7 @@ export async function fetchTransactions(userId) {
     if (!response.ok) throw new Error("Failed to fetch transactions");
     return await response.json();
 }
+
 
 // Create a new transaction linked to the user
 export async function createTransaction(transactionData) {
