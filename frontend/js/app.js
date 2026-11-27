@@ -9,6 +9,7 @@ const usernameInput = document.getElementById("usernameInput");
 const passwordInput = document.getElementById("passwordInput");
 const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
+const guestBtn = document.getElementById("guestBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const welcomeUser = document.getElementById("welcomeUser");
 
@@ -46,8 +47,9 @@ const foodGuideTitle = document.getElementById("foodGuideTitle");
 const foodGuideSub = document.getElementById("foodGuideSub");
 const locationBadge = document.getElementById("locationBadge");
 
-// Persistent User Session (Saved in browser localStorage)
+// Application State
 let currentUser = JSON.parse(localStorage.getItem("budgetUser")) || null;
+let guestTransactions = []; // Temporary RAM list for Guest Mode (not saved to server)
 let balance = 0;
 let currentLang = "tr";
 
@@ -56,13 +58,26 @@ function checkSession() {
     if (currentUser) {
         authSection.classList.add("hidden");
         dashboardSection.classList.remove("hidden");
-        welcomeUser.textContent = `👤 ${currentUser.username}`;
+        if (currentUser.isGuest) {
+            welcomeUser.textContent = currentLang === "tr" ? "⚡ Misafir (Kaydetmez)" : "⚡ Guest (Not Saved)";
+        } else {
+            welcomeUser.textContent = `👤 ${currentUser.username}`;
+        }
         loadTransactions();
         renderLocalFoodList();
     } else {
         authSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
     }
+}
+
+// Guest / Quick Demo Mode Handler
+if (guestBtn) {
+    guestBtn.addEventListener("click", () => {
+        currentUser = { userId: 0, username: "Misafir", isGuest: true };
+        guestTransactions = [];
+        checkSession();
+    });
 }
 
 // Render Seferihisar Local Food Guide on the Left Card
@@ -91,20 +106,29 @@ function renderLocalFoodList() {
             </div>
         `;
 
-        // Deduct meal cost directly from user's C# SQLite budget on click
+        // Deduct meal cost from budget (Guest RAM or Cloud SQLite)
         const btn = card.querySelector(".quick-spend-btn");
         btn.addEventListener("click", async () => {
             if (!currentUser) return;
             try {
-                await createTransaction({
-                    userId: currentUser.userId,
-                    description: `${spot.name} (${spot.item})`,
-                    amount: spot.price,
-                    type: "gider"
-                });
+                if (currentUser.isGuest) {
+                    guestTransactions.push({
+                        id: Date.now(),
+                        description: `${spot.name} (${spot.item})`,
+                        amount: spot.price,
+                        type: "gider"
+                    });
+                } else {
+                    await createTransaction({
+                        userId: currentUser.userId,
+                        description: `${spot.name} (${spot.item})`,
+                        amount: spot.price,
+                        type: "gider"
+                    });
+                }
                 await loadTransactions();
             } catch (error) {
-                alert("Sunucuya bağlanılamadı!");
+                alert(isTr ? "Sunucuya bağlanılamadı!" : "Could not connect to server!");
             }
         });
 
@@ -113,51 +137,60 @@ function renderLocalFoodList() {
 }
 
 // Register Handler
-registerBtn.addEventListener("click", async () => {
-    const user = usernameInput.value.trim();
-    const pass = passwordInput.value.trim();
-    if (!user || !pass) return alert(currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
+if (registerBtn) {
+    registerBtn.addEventListener("click", async () => {
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value.trim();
+        if (!user || !pass) return alert(currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
 
-    try {
-        const data = await registerUser(user, pass);
-        localStorage.setItem("budgetUser", JSON.stringify(data));
-        currentUser = data;
-        checkSession();
-    } catch (error) {
-        alert("Kayıt hatası: " + error.message);
-    }
-});
+        try {
+            const data = await registerUser(user, pass);
+            localStorage.setItem("budgetUser", JSON.stringify(data));
+            currentUser = data;
+            checkSession();
+        } catch (error) {
+            alert((currentLang === "tr" ? "Kayıt hatası: " : "Registration error: ") + error.message);
+        }
+    });
+}
 
 // Login Handler
-loginBtn.addEventListener("click", async () => {
-    const user = usernameInput.value.trim();
-    const pass = passwordInput.value.trim();
-    if (!user || !pass) return alert(currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
+if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value.trim();
+        if (!user || !pass) return alert(currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
 
-    try {
-        const data = await loginUser(user, pass);
-        localStorage.setItem("budgetUser", JSON.stringify(data));
-        currentUser = data;
-        checkSession();
-    } catch (error) {
-        alert("Giriş başarısız! Kullanıcı adı veya şifre hatalı.");
-    }
-});
+        try {
+            const data = await loginUser(user, pass);
+            localStorage.setItem("budgetUser", JSON.stringify(data));
+            currentUser = data;
+            checkSession();
+        } catch (error) {
+            alert(currentLang === "tr" ? "Giriş başarısız! Kullanıcı adı veya şifre hatalı." : "Login failed! Invalid username or password.");
+        }
+    });
+}
 
 // Logout Handler
-logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("budgetUser");
-    currentUser = null;
-    usernameInput.value = "";
-    passwordInput.value = "";
-    checkSession();
-});
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("budgetUser");
+        currentUser = null;
+        guestTransactions = [];
+        usernameInput.value = "";
+        passwordInput.value = "";
+        checkSession();
+    });
+}
 
 // Load user-specific transactions
 async function loadTransactions() {
     if (!currentUser) return;
     try {
-        const transactions = await fetchTransactions(currentUser.userId);
+        const transactions = currentUser.isGuest
+            ? guestTransactions
+            : await fetchTransactions(currentUser.userId);
 
         transactionList.innerHTML = "";
         balance = 0;
@@ -203,7 +236,11 @@ function renderTransactionItem(id, descValue, amnt, typeValue) {
     delBtn.textContent = "✕";
     delBtn.className = "delete-btn";
     delBtn.onclick = async () => {
-        await removeTransaction(id);
+        if (currentUser.isGuest) {
+            guestTransactions = guestTransactions.filter(t => t.id !== id);
+        } else {
+            await removeTransaction(id);
+        }
         await loadTransactions();
     };
 
@@ -214,58 +251,59 @@ function renderTransactionItem(id, descValue, amnt, typeValue) {
     transactionList.prepend(listItem);
 }
 
-// Add transaction linked to currentUser.userId
-addButton.addEventListener("click", async () => {
-    const descValue = description.value.trim();
-    const amnt = Number(amount.value);
-    const typeValue = type.value;
-
-    if (descValue === "" || amnt <= 0) {
-        alert(currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
-        return;
-    }
-
-    try {
-        await createTransaction({
-            userId: currentUser.userId,
-            description: descValue,
-            amount: amnt,
-            type: typeValue
-        });
-        description.value = "";
-        amount.value = "";
-        await loadTransactions();
-    } catch (error) {
-        alert("Sunucuya bağlanılamadı! C# Backend'in açık olduğundan emin olun.");
-    }
+// Add transaction linked to currentUser
+if (addButton) {
+    addButton.addEventListener("click", async () => {
+        const descValue = description.value.trim();
+        const amnt = Number(amount.value);
+const typeValue = type.value;
+if (descValue === "" || amnt <= 0) {
+alert(currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
+return;
+}
+try {
+if (currentUser.isGuest) {
+guestTransactions.push({
+id: Date.now(),
+description: descValue,
+amount: amnt,
+type: typeValue
 });
-
-// Loan Simulator Handler
-calcLoanBtn.addEventListener("click", () => {
-    const principal = Number(loanAmountInput.value);
-    const months = Number(loanMonthsInput.value);
-    const ratePercent = Number(interestRateInput.value);
-
-    if (principal <= 0 || months <= 0 || ratePercent < 0) {
-        alert(currentLang === "tr" ? "Geçerli kredi tutarı ve vade girin!" : "Enter valid loan amount and months!");
-        return;
-    }
-
-    const result = calculateLoan(principal, months, ratePercent);
-
-    simResult.classList.remove("hidden");
-    if (currentLang === "tr") {
-        simResult.innerHTML = `
-            <div>📅 <strong>Aylık Taksit:</strong> ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL</div>
-            <div>💰 <strong>Toplam Geri Ödeme:</strong> ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL</div>
-📈 Toplam Faiz Maliyeti: ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL
-; } else { simResult.innerHTML = 
-📅 Monthly Payment: ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL
-💰 Total Payback: ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL
-📈 Total Interest Paid: ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL
-`;
+} else {
+await createTransaction({
+userId: currentUser.userId,
+description: descValue,
+amount: amnt,
+type: typeValue
+});
+}
+description.value = "";
+amount.value = "";
+await loadTransactions();
+} catch (error) {
+alert(currentLang === "tr" ? "Sunucuya bağlanılamadı!" : "Could not connect to server!");
 }
 });
+}
+// Loan Simulator Handler
+if (calcLoanBtn) {
+calcLoanBtn.addEventListener("click", () => {
+const principal = Number(loanAmountInput.value);
+const months = Number(loanMonthsInput.value);
+const ratePercent = Number(interestRateInput.value);
+if (principal <= 0 || months <= 0 || ratePercent < 0) {
+alert(currentLang === "tr" ? "Geçerli kredi tutarı ve vade girin!" : "Enter valid loan amount and months!");
+return;
+}
+const result = calculateLoan(principal, months, ratePercent);
+simResult.classList.remove("hidden");
+if (currentLang === "tr") {
+simResult.innerHTML = <div>📅 <strong>Aylık Taksit:</strong> ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL</div> <div>💰 <strong>Toplam Geri Ödeme:</strong> ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL</div> <div>📈 <strong>Toplam Faiz Maliyeti:</strong> ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL</div>;
+} else {
+simResult.innerHTML = <div>📅 <strong>Monthly Payment:</strong> ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL</div> <div>💰 <strong>Total Payback:</strong> ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL</div> <div>📈 <strong>Total Interest Paid:</strong> ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL</div>;
+}
+});
+}
 // Language Toggle Function (Safe & Crash-Proof)
 function toggleLanguage() {
 currentLang = currentLang === "tr" ? "en" : "tr";
@@ -280,6 +318,7 @@ if (usernameInput) usernameInput.placeholder = isTr ? "Kullanıcı Adı" : "User
 if (passwordInput) passwordInput.placeholder = isTr ? "Şifre" : "Password";
 if (loginBtn) loginBtn.textContent = isTr ? "Giriş Yap" : "Sign In";
 if (registerBtn) registerBtn.textContent = isTr ? "Kalıcı Hesap Oluştur" : "Create Permanent Account";
+if (guestBtn) guestBtn.textContent = isTr ? "⚡ Hızlıca Gir (Kaydetmez)" : "⚡ Quick Enter (Not Saved)";
 if (foodGuideTitle) foodGuideTitle.textContent = isTr ? "🥙 Seferihisar Döner Rehberi" : "🥙 Seferihisar Doner Guide";
 if (locationBadge) locationBadge.textContent = isTr ? "📍 Konum: Seferihisar / İzmir" : "📍 Location: Seferihisar / Izmir";
 if (foodGuideSub) foodGuideSub.textContent = isTr
@@ -302,6 +341,9 @@ if (loanMonthsInput) loanMonthsInput.placeholder = isTr ? "Vade (Ay - Örn: 24)"
 if (interestRateInput) interestRateInput.placeholder = isTr ? "Aylık Faiz (%)" : "Monthly Interest (%)";
 if (calcLoanBtn) calcLoanBtn.textContent = isTr ? "Krediyi Hesapla" : "Calculate Loan";
 if (currentUser) {
+if (currentUser.isGuest) {
+welcomeUser.textContent = isTr ? "⚡ Misafir (Kaydetmez)" : "⚡ Guest (Not Saved)";
+}
 loadTransactions();
 renderLocalFoodList();
 }
@@ -309,4 +351,4 @@ renderLocalFoodList();
 if (languageButton) languageButton.addEventListener("click", toggleLanguage);
 if (authLangBtn) authLangBtn.addEventListener("click", toggleLanguage);
 // Start Application
-checkSession();
+checkSession();        
