@@ -1,0 +1,243 @@
+/* Transaction filters, analytics, and savings goals. */
+.transaction-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 12px;
+    border: 1px solid #e8ede8;
+    border-radius: 14px;
+    background: #f8faf8;
+}
+
+.transaction-filters input,
+.transaction-filters select {
+    min-width: 0;
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.filter-clear-btn {
+    align-self: flex-end;
+    padding: 4px 2px;
+    border: 0;
+    color: #557064;
+    background: transparent;
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.filter-clear-btn:hover {
+    color: #10865d;
+    text-decoration: underline;
+}
+
+.category-empty {
+    margin-top: 12px;
+}
+
+.edit-btn {
+    padding: 5px 7px;
+    border: 1px solid #dce8df;
+    border-radius: 6px;
+    color: #28714f;
+    background: #eef6f0;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: #deeee2;
+}
+
+.transaction-date {
+    color: #87948c;
+    font-size: 10px;
+}
+
+.item-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.monthly-analysis {
+    margin-bottom: 20px;
+}
+
+.monthly-analysis-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.monthly-analysis-heading h3 {
+    color: #27382f;
+    font-size: 15px;
+}
+
+.monthly-analysis-heading input {
+    width: 145px;
+    padding: 8px;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.monthly-analysis .stats-row {
+    margin-bottom: 12px;
+}
+
+.monthly-metrics {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.monthly-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border: 1px solid #e8ede8;
+    border-radius: 11px;
+    background: #f8faf8;
+}
+
+.monthly-metric span {
+    color: #78867e;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.monthly-metric strong {
+    color: #304139;
+    font-size: 12px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.monthly-analysis-note {
+    margin-top: 9px;
+    color: #78867e;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.savings-goals {
+    margin: 18px 0;
+}
+
+.savings-goals-heading,
+.savings-goal-card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.savings-goals-heading {
+    margin-bottom: 10px;
+}
+
+.savings-goals-heading h3 {
+    color: #2b3d33;
+    font-size: 14px;
+}
+
+.small-action-btn {
+    padding: 7px 10px;
+    border: 1px solid #cce9d9;
+    border-radius: 8px;
+    color: #11734f;
+    background: #ebf8f0;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.small-action-btn:hover {
+    background: #d9f1e3;
+}
+
+.goal-form {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.goal-form input {
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.goal-form .primary-btn {
+    padding: 10px;
+    font-size: 12px;
+}
+
+.savings-goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.savings-goal-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 11px;
+    border: 1px solid #e8ede8;
+    border-radius: 12px;
+    background: #f8faf8;
+}
+
+.savings-goal-card-heading strong {
+    color: #304139;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.savings-goal-card .delete-btn {
+    flex-shrink: 0;
+}
+
+.savings-goal-amount,
+.savings-goal-remaining {
+    color: #68776e;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.savings-goal-meter {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e8eee9;
+}
+
+.savings-goal-meter span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #36a978;
+    transition: width 0.3s ease;
+}
+
+.savings-contribution-row {
+    display: flex;
+    gap: 7px;
+}
+
+.savings-contribution-row input {
+    min-width: 0;
+    padding: 8px 9px;
+    border-radius: 8px;
+    font-size: 11px;
+}

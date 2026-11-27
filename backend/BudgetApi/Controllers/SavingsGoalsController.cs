@@ -1,3 +1,5 @@
+using BudgetApi.Data;
+using BudgetApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

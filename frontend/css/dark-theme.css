@@ -1,0 +1,171 @@
+/* Dark theme tokens and component overrides. */
+body.dark-theme {
+    color-scheme: dark;
+    color: #e4ede7;
+    background:
+        radial-gradient(ellipse at 12% 0%, rgba(16, 185, 129, 0.12), transparent 34rem),
+        #101713;
+}
+
+.dark-theme .card {
+    background: rgba(26, 36, 30, 0.96);
+    border-color: #2d3b32;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+}
+
+.dark-theme .header h2,
+.dark-theme .monthly-analysis-heading h3,
+.dark-theme .category-summary h3,
+.dark-theme .simulator-box h3,
+.dark-theme .savings-goals-heading h3 {
+    color: #e3eee6;
+}
+
+.dark-theme .subtitle,
+.dark-theme .guide-plan-title,
+.dark-theme .budget-rule p,
+.dark-theme .budget-rule .budget-rule-value,
+.dark-theme .guide-plan-note,
+.dark-theme .category-empty,
+.dark-theme .stat-label,
+.dark-theme .transaction-category,
+.dark-theme .transaction-date,
+.dark-theme .monthly-analysis-note,
+.dark-theme .monthly-metric span,
+.dark-theme .savings-goal-amount,
+.dark-theme .savings-goal-remaining {
+    color: #9bab9f;
+}
+
+.dark-theme .user-badge {
+    color: #66d6a5;
+}
+
+.dark-theme input,
+.dark-theme select {
+    color: #e4ede7;
+    background: #202c24;
+    border-color: #39483e;
+}
+
+.dark-theme input::placeholder {
+    color: #87978c;
+}
+
+.dark-theme select option {
+    color: #e4ede7;
+    background: #202c24;
+}
+
+.dark-theme .lang-btn,
+.dark-theme .theme-toggle,
+.dark-theme .logout-btn {
+    color: #d2dfd5;
+    background: #26332a;
+    border-color: #3a4a3e;
+}
+
+.dark-theme .lang-btn:hover,
+.dark-theme .theme-toggle:hover {
+    background: #324338;
+}
+
+.dark-theme .logout-btn {
+    color: #ffaaaa;
+    background: #482b2b;
+    border-color: #684040;
+}
+
+.dark-theme .logout-btn:hover {
+    color: #fff;
+    background: #a63e3e;
+}
+
+.dark-theme .export-btn,
+.dark-theme .small-action-btn,
+.dark-theme .guide-action-btn {
+    color: #91e2b9;
+    background: #203b2c;
+    border-color: #315d43;
+}
+
+.dark-theme .export-btn:hover,
+.dark-theme .small-action-btn:hover,
+.dark-theme .guide-action-btn:hover {
+    background: #294b37;
+}
+
+.dark-theme .guest-btn {
+    color: #c4d2c8;
+    background: #26332a;
+    border-color: #46564b;
+}
+
+.dark-theme li,
+.dark-theme .stat-box,
+.dark-theme .category-row,
+.dark-theme .monthly-metric,
+.dark-theme .savings-goal-card,
+.dark-theme .transaction-filters,
+.dark-theme .simulator-box {
+    color: #d9e5dc;
+    background: #202c24;
+    border-color: #334238;
+}
+
+.dark-theme .monthly-metric strong,
+.dark-theme .savings-goal-card-heading strong {
+    color: #d9e5dc;
+}
+
+.dark-theme .filter-clear-btn {
+    color: #a9c5b3;
+}
+
+.dark-theme .edit-btn {
+    color: #9be0b8;
+    background: #203b2c;
+    border-color: #315d43;
+}
+
+.dark-theme .edit-btn:hover {
+    background: #294b37;
+}
+
+.dark-theme .needs-rule .budget-rule-percent {
+    color: #9cc0fa;
+    background: #26354d;
+}
+
+.dark-theme .wants-rule .budget-rule-percent {
+    color: #f3cb7c;
+    background: #473b25;
+}
+
+.dark-theme .savings-rule .budget-rule-percent {
+    color: #8de0b0;
+    background: #203b2c;
+}
+
+.dark-theme .budget-rule h4 {
+    color: #d8e5db;
+}
+
+.dark-theme .budget-rule-meter,
+.dark-theme .savings-goal-meter {
+    background: #35433a;
+}
+
+.dark-theme .sim-result {
+    color: #b6d2fb;
+    background: #1e3048;
+    border-color: #344d6d;
+}
+
+.dark-theme .income-text {
+    color: #61d6a0;
+}
+
+.dark-theme .expense-text {
+    color: #ff8585;
+}

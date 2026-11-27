@@ -1,4 +1,4 @@
-namespace BudgetApi;
+namespace BudgetApi.Models;
 
 public class SavingsGoal
 {

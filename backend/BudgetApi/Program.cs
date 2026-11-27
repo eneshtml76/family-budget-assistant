@@ -1,4 +1,4 @@
-using BudgetApi; // Required so Program.cs can find AppDbContext
+using BudgetApi.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

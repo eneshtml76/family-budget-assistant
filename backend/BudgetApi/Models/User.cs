@@ -1,4 +1,4 @@
-namespace BudgetApi;
+namespace BudgetApi.Models;
 
 // Represents a registered user account
 public class User

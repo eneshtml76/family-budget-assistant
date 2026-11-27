@@ -66,6 +66,28 @@ v2.0 is the planned final **major** version, not a promise that development will
 - **Database:** SQLite with Entity Framework Core
 - **Hosting:** GitHub Pages (frontend) and Railway (API)
 
+## Project structure
+
+```text
+frontend/
+  css/                 # Ordered visual layers and responsive styles
+  js/
+    core/              # Shared DOM references, state, categories, and formatting
+    features/          # Authentication, transactions, analytics, goals, charts
+    services/          # API communication
+    ui/                # Language, theme, and install/version interactions
+    app.js             # Application entry point
+  index.html
+  service-worker.js
+backend/BudgetApi/
+  Controllers/         # HTTP endpoints
+  Data/                # Entity Framework database context
+  Models/              # Persistent data entities
+  Program.cs            # API startup and dependency configuration
+```
+
+The frontend uses native browser modules and remains a static GitHub Pages site; no build step or bundler is required. Stylesheets load in the order listed by `frontend/index.html`, and the service worker precaches the application shell for offline launch.
+
 ## Run locally
 
 ### 1. Start the API
@@ -75,7 +97,7 @@ cd backend\BudgetApi
 dotnet run
 ```
 
-The frontend's local API configuration expects the API at `http://localhost:5098`. If your local API uses another port, update `frontend/js/api.js` or configure the local launch URL accordingly. The API creates its SQLite database automatically. Set `BUDGET_DB_PATH` to choose a different database file.
+The frontend's local API configuration expects the API at `http://localhost:5098`. If your local API uses another port, update `frontend/js/services/api.js` or configure the local launch URL accordingly. The API creates its SQLite database automatically. Set `BUDGET_DB_PATH` to choose a different database file.
 
 ### 2. Serve the frontend
 

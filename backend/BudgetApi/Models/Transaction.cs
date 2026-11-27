@@ -1,4 +1,4 @@
-namespace BudgetApi;
+namespace BudgetApi.Models;
 
 // Represents a financial transaction linked to a specific user
 public class Transaction

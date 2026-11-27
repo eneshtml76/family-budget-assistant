@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
+using BudgetApi.Data;
+using BudgetApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

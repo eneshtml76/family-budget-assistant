@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using BudgetApi.Models;
 
-namespace BudgetApi;
+namespace BudgetApi.Data;
 
 public class AppDbContext : DbContext
 {

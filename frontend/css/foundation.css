@@ -1,0 +1,323 @@
+/* Base reset, elements, and shared primitives. */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top left, #16222a, #0b0f14 70%);
+    color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 16px;
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.card {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(24, 31, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.auth-card {
+    margin-top: 40px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 18px;
+    line-height: 1.4;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.header h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.user-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #34d399;
+    font-weight: 500;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.lang-btn, .logout-btn {
+    background: rgba(255, 255, 255, 0.07);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.lang-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+
+.logout-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.logout-btn:hover { background: #ef4444; color: #fff; }
+
+.balance-card {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    padding: 22px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
+}
+
+.balance-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+}
+
+.balance-amount {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus, select:focus { border-color: #10b981; }
+
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    background: #10b981;
+    color: #022c22;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.primary-btn:hover { background: #34d399; }
+
+.secondary-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.secondary-btn:hover { background: #60a5fa; }
+
+.guest-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.guest-btn:hover {
+    background: rgba(148, 163, 184, 0.22);
+    color: #fff;
+}
+
+ul {
+    list-style: none;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.item-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.delete-btn {
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.delete-btn:hover { background: #ef4444; color: #fff; }
+
+.income-text { color: #34d399; font-weight: 600; }
+.expense-text { color: #f87171; font-weight: 600; }
+
+.chart-container {
+    width: 210px;
+    height: 210px;
+    margin: 0 auto 22px auto;
+}
+
+.simulator-box {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.simulator-box h3 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #e2e8f0;
+}
+
+.sim-result {
+    margin-top: 14px;
+    padding: 12px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #bfdbfe;
+}
+
+.hidden { display: none !important; }
+/* Mini Income/Expense Stat Boxes */
+.stats-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.stat-box strong {
+    font-size: 16px;
+}
+/* Update .dashboard max-width for 3 columns */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    justify-content: center;
+    width: 100%;
+    max-width: 1320px;
+}
+
+/* Guest / Quick Demo Mode Button */
+.guest-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 4px;
+}
+
+.guest-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border-color: #facc15;
+}
+
+/* Refreshed responsive dashboard */
