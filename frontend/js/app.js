@@ -11,6 +11,8 @@ const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
 const guestBtn = document.getElementById("guestBtn");
 const logoutBtn = document.getElementById("logoutBtn");
+const exportButton = document.getElementById("exportButton");
+const exportButtonLabel = document.getElementById("exportButtonLabel");
 const welcomeUser = document.getElementById("welcomeUser");
 
 // Budget DOM Elements
@@ -50,6 +52,7 @@ const locationBadge = document.getElementById("locationBadge");
 // Application State
 let currentUser = JSON.parse(localStorage.getItem("budgetUser")) || null;
 let guestTransactions = [];
+let currentTransactions = [];
 let balance = 0;
 let currentLang = "tr";
 
@@ -168,6 +171,7 @@ if (logoutBtn) {
         localStorage.removeItem("budgetUser");
         currentUser = null;
         guestTransactions = [];
+        currentTransactions = [];
         usernameInput.value = "";
         passwordInput.value = "";
         checkSession();
@@ -182,6 +186,7 @@ async function loadTransactions() {
             ? guestTransactions
             : await fetchTransactions(currentUser.userId);
 
+        currentTransactions = transactions;
         transactionList.innerHTML = "";
         balance = 0;
         let totalIncome = 0;
@@ -207,6 +212,37 @@ async function loadTransactions() {
         console.error("Error loading transactions:", error);
     }
 }
+
+function downloadTransactions() {
+    const isTr = currentLang === "tr";
+    const delimiter = ";";
+    const rows = [
+        isTr ? ["Açıklama", "Tür", "Tutar (TL)"] : ["Description", "Type", "Amount (TL)"],
+        ...currentTransactions.map((transaction) => [
+            transaction.description,
+            transaction.type === "gelir" ? (isTr ? "Gelir" : "Income") : (isTr ? "Gider" : "Expense"),
+            transaction.amount
+        ])
+    ];
+    const csv = rows
+        .map((row) => row.map((value) => {
+            const text = String(value ?? "");
+            const safeText = /^[=+\-@\t\r]/.test(text) ? "'" + text : text;
+            return '"' + safeText.replace(/"/g, '""') + '"';
+        }).join(delimiter))
+        .join("\r\n");
+    const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "aile-butce-islemleri-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+if (exportButton) exportButton.addEventListener("click", downloadTransactions);
 
 function renderTransactionItem(id, descValue, amnt, typeValue) {
     const listItem = document.createElement("li");
@@ -328,6 +364,8 @@ if (incomeOption) incomeOption.textContent = isTr ? "Gelir (+)" : "Income (+)";
 if (expenseOption) expenseOption.textContent = isTr ? "Gider (-)" : "Expense (-)";
 if (addButton) addButton.textContent = isTr ? "İşlemi Ekle" : "Add Transaction";
 if (logoutBtn) logoutBtn.textContent = isTr ? "Çıkış" : "Logout";
+if (exportButtonLabel) exportButtonLabel.textContent = isTr ? "İndir" : "Export";
+if (exportButton) exportButton.setAttribute("aria-label", isTr ? "İşlemleri indir" : "Download transactions");
 if (analyticsTitle) analyticsTitle.textContent = isTr ? "📊 Bütçe Analizi & Kredi" : "📊 Budget Analytics & Loan";
 if (simTitle) simTitle.textContent = isTr ? "🏦 Kredi & Taksit Simülatörü" : "🏦 Loan & Installment Simulator";
 if (loanAmountInput) loanAmountInput.placeholder = isTr ? "Kredi Tutarı (Örn: 1000000 TL)" : "Loan Amount (e.g. 1000000 TL)";

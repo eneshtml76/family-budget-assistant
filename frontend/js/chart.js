@@ -23,13 +23,13 @@ export function updateChart(income, expense, isTurkish) {
             labels: isTurkish ? ["Gelir", "Gider"] : ["Income", "Expense"],
             datasets: [{
                 data: [income, expense],
-                backgroundColor: ["#10b981", "#ef4444"],
+                backgroundColor: ["#10865d", "#e05b55"],
                 borderWidth: 0
             }]
         },
         options: {
             plugins: {
-                legend: { labels: { color: "#f8fafc" } }
+                legend: { labels: { color: "#47574e" } }
             }
         }
     });

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="api-base-url" content="">
-    <title>Family Budget & Local Food Assistant</title>
+    <meta name="theme-color" content="#f5f7f2">
+    <meta name="description" content="Aile bütçenizi kolayca takip edin, gelir ve giderlerinizi analiz edin.">
+    <title>Aile Bütçe Asistanı</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,6 +59,10 @@
                     <span id="welcomeUser" class="user-badge"></span>
                 </div>
                 <div class="header-actions">
+                    <button id="exportButton" class="export-btn" type="button" aria-label="İşlemleri indir">
+                        <span aria-hidden="true">↓</span>
+                        <span id="exportButtonLabel">İndir</span>
+                    </button>
                     <button id="languageButton" class="lang-btn" type="button">EN</button>
                     <button id="logoutBtn" class="logout-btn" type="button">Çıkış</button>
                 </div>
