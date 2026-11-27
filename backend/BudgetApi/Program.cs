@@ -3,9 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var databasePath = Environment.GetEnvironmentVariable("BUDGET_DB_PATH") ?? "budget.db";
+var databaseDirectory = Path.GetDirectoryName(databasePath);
+if (!string.IsNullOrEmpty(databaseDirectory))
+{
+    Directory.CreateDirectory(databaseDirectory);
+}
+
 // 1. Register SQLite database connection
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=budget.db"));
+    options.UseSqlite($"Data Source={databasePath}"));
 
 // 2. Add CORS policy to allow requests from the frontend
 builder.Services.AddCors(options =>
