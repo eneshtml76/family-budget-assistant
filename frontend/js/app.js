@@ -950,6 +950,32 @@ if (loanAmountInput) loanAmountInput.placeholder = isTr ? "Kredi Tutarı (Örn: 
 if (loanMonthsInput) loanMonthsInput.placeholder = isTr ? "Vade (Ay - Örn: 24)" : "Term (Months - e.g. 24)";
 if (interestRateInput) interestRateInput.placeholder = isTr ? "Aylık Faiz (%)" : "Monthly Interest (%)";
 if (calcLoanBtn) calcLoanBtn.textContent = isTr ? "Krediyi Hesapla" : "Calculate Loan";
+if (versionButtonText) versionButtonText.textContent = isTr ? "Sürüm 1.0" : "Version 1.0";
+document.getElementById("versionEyebrow").textContent = isTr ? "GÜNCELLEME GÜNLÜĞÜ" : "UPDATE LOG";
+document.getElementById("versionModalTitle").textContent = isTr ? "Sürüm geçmişi" : "Version history";
+document.getElementById("releaseStatus").textContent = isTr ? "GÜNCEL" : "CURRENT";
+document.getElementById("releaseTitleV1").textContent = isTr ? "v1.0 · Kararlı sürüm" : "v1.0 · Stable release";
+document.getElementById("releaseDateV1").textContent = isTr ? "27 Kasım 2026" : "November 27, 2026";
+document.getElementById("releaseSummaryV1").textContent = isTr
+    ? "Aile bütçesi uygulaması artık aylık analiz, işlem yönetimi, birikim hedefleri ve koyu temayı birlikte sunuyor."
+    : "The family budget app now includes monthly analysis, transaction management, savings goals, and dark mode.";
+document.getElementById("releaseItemV1a").textContent = isTr
+    ? "Aylık gelir, gider, önceki ay karşılaştırması ve tasarruf oranı"
+    : "Monthly income, expenses, previous-month comparison, and savings rate";
+document.getElementById("releaseItemV1b").textContent = isTr
+    ? "İşlem düzenleme, arama ve tarihe/kategoriye/türe göre filtreleme"
+    : "Transaction editing, search, and date/category/type filters";
+document.getElementById("releaseItemV1c").textContent = isTr
+    ? "Araba, tatil ve acil durum için birikim hedefleri"
+    : "Savings goals for a car, vacation, and emergency fund";
+document.getElementById("releaseItemV1d").textContent = isTr
+    ? "Koyu tema tercihi ve gelişmiş mobil uyumluluk"
+    : "Dark theme preference and improved mobile responsiveness";
+document.getElementById("upcomingLabel").textContent = isTr ? "SONRAKİ SÜRÜM" : "NEXT RELEASE";
+document.getElementById("upcomingText").textContent = isTr
+    ? "v2 için bildirimler, daha ayrıntılı raporlar veya yeni özellikler eklenebilir."
+    : "v2 can include notifications, deeper reports, or additional features.";
+closeVersionButton.setAttribute("aria-label", isTr ? "Kapat" : "Close");
 applyTheme();
 renderCategoryFilterOptions();
 renderFilteredTransactions();
@@ -965,5 +991,32 @@ loadSavingsGoals();
 }
 if (languageButton) languageButton.addEventListener("click", toggleLanguage);
 if (authLangBtn) authLangBtn.addEventListener("click", toggleLanguage);
+
+const versionButton = document.getElementById("versionButton");
+const versionButtonText = document.getElementById("versionButtonText");
+const versionModal = document.getElementById("versionModal");
+const closeVersionButton = document.getElementById("closeVersionButton");
+const versionBackdrop = document.getElementById("versionBackdrop");
+
+function openVersionModal() {
+    versionModal.classList.remove("hidden");
+    document.body.classList.add("modal-open");
+    closeVersionButton.focus();
+}
+
+function closeVersionModal() {
+    versionModal.classList.add("hidden");
+    document.body.classList.remove("modal-open");
+    versionButton.focus();
+}
+
+versionButton.addEventListener("click", openVersionModal);
+closeVersionButton.addEventListener("click", closeVersionModal);
+versionBackdrop.addEventListener("click", closeVersionModal);
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !versionModal.classList.contains("hidden")) {
+        closeVersionModal();
+    }
+});
 // Start Application
 checkSession();

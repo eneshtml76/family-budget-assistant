@@ -26,6 +26,20 @@ A modern, responsive, and bilingual (**EN / TR**) full-stack personal finance an
 
 ---
 
+## 🚀 Sürüm Geçmişi
+
+### v1.0 — Kararlı sürüm (27 Kasım 2026)
+
+- Aylık gelir/gider analizi, önceki ay karşılaştırması ve tasarruf oranı
+- İşlem düzenleme, arama, kategori/tür/tarih filtreleme ve CSV dışa aktarma
+- Araba, tatil ve acil durum birikim hedefleri
+- Koyu tema tercihi ve mobil uyumluluk
+- Uygulama altındaki sürüm geçmişi penceresi
+
+Gelecek sürüm (`v2.0`) için bildirimler, ayrıntılı grafikler veya yeni kullanıcı özellikleri eklenebilir.
+
+---
+
 ## 🛠️ Tech Stack
 
 * **Frontend:** HTML5, CSS3 (Glassmorphism UI), Vanilla JavaScript (ES6 Modules), Chart.js

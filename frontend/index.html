@@ -240,6 +240,46 @@
 
     </div>
 
+    <button id="versionButton" class="version-button" type="button" aria-haspopup="dialog">
+        <span class="version-dot" aria-hidden="true"></span>
+        <span id="versionButtonText">Sürüm 1.0</span>
+    </button>
+
+    <div id="versionModal" class="version-modal hidden" role="dialog" aria-modal="true" aria-labelledby="versionModalTitle">
+        <button id="versionBackdrop" class="version-backdrop" type="button" aria-label="Sürüm geçmişini kapat"></button>
+        <section class="version-sheet">
+            <header class="version-sheet-header">
+                <div>
+                    <span id="versionEyebrow" class="version-eyebrow">GÜNCELLEME GÜNLÜĞÜ</span>
+                    <h2 id="versionModalTitle">Sürüm geçmişi</h2>
+                </div>
+                <button id="closeVersionButton" class="version-close-button" type="button" aria-label="Kapat">✕</button>
+            </header>
+
+            <article class="release-card is-current">
+                <div class="release-heading">
+                    <div>
+                        <span class="release-status" id="releaseStatus">GÜNCEL</span>
+                        <h3 id="releaseTitleV1">v1.0 · Kararlı sürüm</h3>
+                    </div>
+                    <time id="releaseDateV1" datetime="2026-11-27">27 Kasım 2026</time>
+                </div>
+                <p id="releaseSummaryV1">Aile bütçesi uygulaması artık aylık analiz, işlem yönetimi, birikim hedefleri ve koyu temayı birlikte sunuyor.</p>
+                <ul class="release-changes">
+                    <li id="releaseItemV1a">Aylık gelir, gider, önceki ay karşılaştırması ve tasarruf oranı</li>
+                    <li id="releaseItemV1b">İşlem düzenleme, arama ve tarihe/kategoriye/türe göre filtreleme</li>
+                    <li id="releaseItemV1c">Araba, tatil ve acil durum için birikim hedefleri</li>
+                    <li id="releaseItemV1d">Koyu tema tercihi ve gelişmiş mobil uyumluluk</li>
+                </ul>
+            </article>
+
+            <div id="upcomingRelease" class="upcoming-release">
+                <span id="upcomingLabel">SONRAKİ SÜRÜM</span>
+                <p id="upcomingText">v2 için bildirimler, daha ayrıntılı raporlar veya yeni özellikler eklenebilir.</p>
+            </div>
+        </section>
+    </div>
+
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
