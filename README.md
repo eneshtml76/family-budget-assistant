@@ -4,6 +4,11 @@
 [![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/eneshtml76/family-budget-assistant/tree/v1.1)
 [![Frontend](https://img.shields.io/badge/frontend-GitHub%20Pages-222222.svg)](https://eneshtml76.github.io/family-budget-assistant/)
 
+
+![Account Login](docs/screenshots/01-account-login.png)
+![Dashboard Overview](docs/screenshots/02-dashboard-overview.png)
+
+
 A responsive, bilingual family budgeting application for tracking income, expenses, monthly trends, and savings goals. The web app can be installed from supported mobile and desktop browsers as a Progressive Web App (PWA).
 
 **Live application:** [eneshtml76.github.io/family-budget-assistant](https://eneshtml76.github.io/family-budget-assistant/)
