@@ -49,7 +49,7 @@ const locationBadge = document.getElementById("locationBadge");
 
 // Application State
 let currentUser = JSON.parse(localStorage.getItem("budgetUser")) || null;
-let guestTransactions = []; // Temporary RAM list for Guest Mode (not saved to server)
+let guestTransactions = [];
 let balance = 0;
 let currentLang = "tr";
 
@@ -61,7 +61,7 @@ function checkSession() {
         if (currentUser.isGuest) {
             welcomeUser.textContent = currentLang === "tr" ? "⚡ Misafir (Kaydetmez)" : "⚡ Guest (Not Saved)";
         } else {
-            welcomeUser.textContent = `👤 ${currentUser.username}`;
+            welcomeUser.textContent = "👤 " + currentUser.username;
         }
         loadTransactions();
         renderLocalFoodList();
@@ -92,21 +92,11 @@ function renderLocalFoodList() {
         const card = document.createElement("div");
         card.className = "food-item";
 
-        card.innerHTML = `
-            <div class="food-top">
-                <span class="food-name">${spot.name}</span>
-                <span class="food-rating">⭐ ${spot.rating}</span>
-            </div>
-            <div class="food-desc">${spot.item} — ${isTr ? spot.noteTr : spot.noteEn}</div>
-            <div class="food-bottom">
-                <span class="food-price">${spot.price} TL</span>
-                <button class="quick-spend-btn" type="button">
-                    ${isTr ? "Bütçeden Düş (-)" : "Deduct (-)"}
-                </button>
-            </div>
-        `;
+        const noteText = isTr ? spot.noteTr : spot.noteEn;
+        const btnText = isTr ? "Bütçeden Düş (-)" : "Deduct (-)";
 
-        // Deduct meal cost from budget (Guest RAM or Cloud SQLite)
+        card.innerHTML = '<div class="food-top"><span class="food-name">' + spot.name + '</span><span class="food-rating">⭐ ' + spot.rating + '</span></div><div class="food-desc">' + spot.item + ' — ' + noteText + '</div><div class="food-bottom"><span class="food-price">' + spot.price + ' TL</span><button class="quick-spend-btn" type="button">' + btnText + '</button></div>';
+
         const btn = card.querySelector(".quick-spend-btn");
         btn.addEventListener("click", async () => {
             if (!currentUser) return;
@@ -114,14 +104,14 @@ function renderLocalFoodList() {
                 if (currentUser.isGuest) {
                     guestTransactions.push({
                         id: Date.now(),
-                        description: `${spot.name} (${spot.item})`,
+                        description: spot.name + " (" + spot.item + ")",
                         amount: spot.price,
                         type: "gider"
                     });
                 } else {
                     await createTransaction({
                         userId: currentUser.userId,
-                        description: `${spot.name} (${spot.item})`,
+                        description: spot.name + " (" + spot.item + ")",
                         amount: spot.price,
                         type: "gider"
                     });
@@ -208,9 +198,9 @@ async function loadTransactions() {
             renderTransactionItem(item.id, item.description, item.amount, item.type);
         });
 
-        totalBalance.textContent = `${balance.toLocaleString("tr-TR")} TL`;
-        if (totalIncomeAmount) totalIncomeAmount.textContent = `+${totalIncome.toLocaleString("tr-TR")} TL`;
-        if (totalExpenseAmount) totalExpenseAmount.textContent = `-${totalExpense.toLocaleString("tr-TR")} TL`;
+        totalBalance.textContent = balance.toLocaleString("tr-TR") + " TL";
+        if (totalIncomeAmount) totalIncomeAmount.textContent = "+" + totalIncome.toLocaleString("tr-TR") + " TL";
+        if (totalExpenseAmount) totalExpenseAmount.textContent = "-" + totalExpense.toLocaleString("tr-TR") + " TL";
 
         updateChart(totalIncome, totalExpense, currentLang === "tr");
     } catch (error) {
@@ -229,7 +219,7 @@ function renderTransactionItem(id, descValue, amnt, typeValue) {
 
     const amountSpan = document.createElement("span");
     const isIncome = typeValue === "gelir";
-    amountSpan.textContent = `${isIncome ? "+" : "-"}${amnt.toLocaleString("tr-TR")} TL`;
+    amountSpan.textContent = (isIncome ? "+" : "-") + amnt.toLocaleString("tr-TR") + " TL";
     amountSpan.className = isIncome ? "income-text" : "expense-text";
 
     const delBtn = document.createElement("button");
@@ -256,9 +246,10 @@ if (addButton) {
     addButton.addEventListener("click", async () => {
         const descValue = description.value.trim();
         const amnt = Number(amount.value);
-const typeValue = type.value;
-if (descValue === "" || amnt <= 0) {
-alert(currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
+        const typeValue = type.value;
+
+        if (descValue === "" || amnt <= 0) {
+            alert(currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
 return;
 }
 try {
@@ -296,15 +287,18 @@ alert(currentLang === "tr" ? "Geçerli kredi tutarı ve vade girin!" : "Enter va
 return;
 }
 const result = calculateLoan(principal, months, ratePercent);
+const monthlyStr = Math.round(result.monthlyPayment).toLocaleString("tr-TR");
+const totalStr = Math.round(result.totalPayment).toLocaleString("tr-TR");
+const interestStr = Math.round(result.totalInterest).toLocaleString("tr-TR");
 simResult.classList.remove("hidden");
 if (currentLang === "tr") {
-simResult.innerHTML = <div>📅 <strong>Aylık Taksit:</strong> ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL</div> <div>💰 <strong>Toplam Geri Ödeme:</strong> ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL</div> <div>📈 <strong>Toplam Faiz Maliyeti:</strong> ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL</div>;
+simResult.innerHTML = '📅 Aylık Taksit: ' + monthlyStr + ' TL<br>💰 Toplam Geri Ödeme: ' + totalStr + ' TL<br>📈 Toplam Faiz Maliyeti: ' + interestStr + ' TL';
 } else {
-simResult.innerHTML = <div>📅 <strong>Monthly Payment:</strong> ${Math.round(result.monthlyPayment).toLocaleString("tr-TR")} TL</div> <div>💰 <strong>Total Payback:</strong> ${Math.round(result.totalPayment).toLocaleString("tr-TR")} TL</div> <div>📈 <strong>Total Interest Paid:</strong> ${Math.round(result.totalInterest).toLocaleString("tr-TR")} TL</div>;
+simResult.innerHTML = '📅 Monthly Payment: ' + monthlyStr + ' TL<br>💰 Total Payback: ' + totalStr + ' TL<br>📈 Total Interest Paid: ' + interestStr + ' TL';
 }
 });
 }
-// Language Toggle Function (Safe & Crash-Proof)
+// Language Toggle Function
 function toggleLanguage() {
 currentLang = currentLang === "tr" ? "en" : "tr";
 const isTr = currentLang === "tr";
@@ -351,4 +345,4 @@ renderLocalFoodList();
 if (languageButton) languageButton.addEventListener("click", toggleLanguage);
 if (authLangBtn) authLangBtn.addEventListener("click", toggleLanguage);
 // Start Application
-checkSession();        
+checkSession();
