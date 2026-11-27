@@ -17,7 +17,7 @@ A modern, responsive, and bilingual (**EN / TR**) full-stack personal finance an
 * **📥 Transaction Export:** Download your transactions as a Turkish spreadsheet-friendly CSV from desktop or mobile.
 * **🧾 Spending Categories:** Categorize expenses and review spending totals by category.
 * **🏦 Bank Loan & Installment Simulator:** Calculates exact monthly installments, total payback, and total compound interest cost using standard banking amortization formulas.
-* **🥙 Local Food & Expense Quick-Deduct:** Integrated Seferihisar local dining guide with ratings and menu prices that deducts meal costs directly from the user's database balance in one click.
+* **👨‍👩‍👧‍👦 Family Budget Guide:** Practical, bilingual tips to help families build simple, sustainable budgeting habits.
 * **🛡️ Security First:** Built with DOM XSS protection (`textContent` sanitization), input validation, and user-level data isolation (`UserId` filtering).
 * **🌐 Bilingual Interface:** Instant switching between Turkish (`TR`) and English (`EN`).
 

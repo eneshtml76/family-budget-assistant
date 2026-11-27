@@ -36,19 +36,47 @@
     <!-- 3-COLUMN MAIN DASHBOARD -->
     <div id="dashboardSection" class="dashboard hidden">
         
-        <!-- LEFT CARD: Seferihisar Local Food & Doner Guide -->
-        <aside class="card">
-            <header class="header">
-                <div>
-                    <h2 id="foodGuideTitle">🥙 Seferihisar Döner Rehberi</h2>
-                    <span class="user-badge" id="locationBadge">📍 Konum: Seferihisar / İzmir</span>
+        <!-- LEFT CARD: Family Budget Guide -->
+        <aside class="card family-guide-card">
+            <section class="family-guide-hero">
+                <span id="guideKicker" class="guide-kicker">AİLECE DAHA GÜÇLÜ</span>
+                <h2 id="guideTitle">Birlikte daha dengeli bir bütçe</h2>
+                <p id="guideIntro">Küçük alışkanlıklar, ailece büyük fark yaratır.</p>
+                <div class="guide-family-art" aria-hidden="true">
+                    <span>🏡</span>
+                    <span>💚</span>
+                    <span>👨‍👩‍👧‍👦</span>
                 </div>
-            </header>
+            </section>
 
-            <p id="foodGuideSub" class="subtitle">Güncel menü fiyatları ve puanlar. Tek tıkla bütçenden düşebilirsin.</p>
+            <div class="guide-tips">
+                <article class="guide-tip">
+                    <span class="guide-tip-icon" aria-hidden="true">🛒</span>
+                    <div>
+                        <h3 id="guideTipTitle1">Listeyle alışveriş yapın</h3>
+                        <p id="guideTipText1">Alışverişten önce ihtiyaçları birlikte belirleyin.</p>
+                    </div>
+                </article>
+                <article class="guide-tip">
+                    <span class="guide-tip-icon" aria-hidden="true">🗓️</span>
+                    <div>
+                        <h3 id="guideTipTitle2">Haftada 10 dakika ayırın</h3>
+                        <p id="guideTipText2">Gelir ve giderlerinize ailece göz atın.</p>
+                    </div>
+                </article>
+                <article class="guide-tip">
+                    <span class="guide-tip-icon" aria-hidden="true">🌱</span>
+                    <div>
+                        <h3 id="guideTipTitle3">Küçük birikimle başlayın</h3>
+                        <p id="guideTipText3">Her gelirden ortak hedefiniz için pay ayırın.</p>
+                    </div>
+                </article>
+            </div>
 
-            <!-- Dynamic Local Doner List -->
-            <div id="localFoodList" class="food-list"></div>
+            <button id="guideActionButton" class="guide-action-btn" type="button">
+                <span id="guideActionLabel">İlk işlemini ekle</span>
+                <span aria-hidden="true">→</span>
+            </button>
         </aside>
 
         <!-- CENTER CARD: Budget & Transactions -->

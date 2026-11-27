@@ -1,6 +1,5 @@
 import { registerUser, loginUser, fetchTransactions, createTransaction, removeTransaction } from "./api.js";
 import { updateChart, calculateLoan } from "./chart.js";
-import { seferihisarDonerSpots } from "./foodData.js";
 
 // Auth DOM Elements
 const authSection = document.getElementById("authSection");
@@ -48,9 +47,17 @@ const expenseOption = document.getElementById("expenseOption");
 const analyticsTitle = document.getElementById("analyticsTitle");
 const categorySummaryTitle = document.getElementById("categorySummaryTitle");
 const simTitle = document.getElementById("simTitle");
-const foodGuideTitle = document.getElementById("foodGuideTitle");
-const foodGuideSub = document.getElementById("foodGuideSub");
-const locationBadge = document.getElementById("locationBadge");
+const guideKicker = document.getElementById("guideKicker");
+const guideTitle = document.getElementById("guideTitle");
+const guideIntro = document.getElementById("guideIntro");
+const guideTipTitle1 = document.getElementById("guideTipTitle1");
+const guideTipText1 = document.getElementById("guideTipText1");
+const guideTipTitle2 = document.getElementById("guideTipTitle2");
+const guideTipText2 = document.getElementById("guideTipText2");
+const guideTipTitle3 = document.getElementById("guideTipTitle3");
+const guideTipText3 = document.getElementById("guideTipText3");
+const guideActionButton = document.getElementById("guideActionButton");
+const guideActionLabel = document.getElementById("guideActionLabel");
 
 // Application State
 let currentUser = JSON.parse(localStorage.getItem("budgetUser")) || null;
@@ -130,6 +137,13 @@ function renderCategorySummary(transactions) {
 type.addEventListener("change", () => renderCategoryOptions());
 renderCategoryOptions();
 
+if (guideActionButton) {
+    guideActionButton.addEventListener("click", () => {
+        description.scrollIntoView({ behavior: "smooth", block: "center" });
+        description.focus({ preventScroll: true });
+    });
+}
+
 // Check if user is already logged in on page load
 function checkSession() {
     if (currentUser) {
@@ -141,7 +155,6 @@ function checkSession() {
             welcomeUser.textContent = "👤 " + currentUser.username;
         }
         loadTransactions();
-        renderLocalFoodList();
     } else {
         authSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
@@ -154,54 +167,6 @@ if (guestBtn) {
         currentUser = { userId: 0, username: "Misafir", isGuest: true };
         guestTransactions = [];
         checkSession();
-    });
-}
-
-// Render Seferihisar Local Food Guide on the Left Card
-function renderLocalFoodList() {
-    const listContainer = document.getElementById("localFoodList");
-    if (!listContainer) return;
-
-    const isTr = currentLang === "tr";
-    listContainer.innerHTML = "";
-
-    seferihisarDonerSpots.forEach((spot) => {
-        const card = document.createElement("div");
-        card.className = "food-item";
-
-        const noteText = isTr ? spot.noteTr : spot.noteEn;
-        const btnText = isTr ? "Bütçeden Düş (-)" : "Deduct (-)";
-
-        card.innerHTML = '<div class="food-top"><span class="food-name">' + spot.name + '</span><span class="food-rating">⭐ ' + spot.rating + '</span></div><div class="food-desc">' + spot.item + ' — ' + noteText + '</div><div class="food-bottom"><span class="food-price">' + spot.price + ' TL</span><button class="quick-spend-btn" type="button">' + btnText + '</button></div>';
-
-        const btn = card.querySelector(".quick-spend-btn");
-        btn.addEventListener("click", async () => {
-            if (!currentUser) return;
-            try {
-                if (currentUser.isGuest) {
-                    guestTransactions.push({
-                        id: Date.now(),
-                        description: spot.name + " (" + spot.item + ")",
-                        amount: spot.price,
-                        type: "gider",
-                        category: "dining"
-                    });
-                } else {
-                    await createTransaction({
-                        userId: currentUser.userId,
-                        description: spot.name + " (" + spot.item + ")",
-                        amount: spot.price,
-                        type: "gider",
-                        category: "dining"
-                    });
-                }
-                await loadTransactions();
-            } catch (error) {
-                alert(isTr ? "Sunucuya bağlanılamadı!" : "Could not connect to server!");
-            }
-        });
-
-        listContainer.appendChild(card);
     });
 }
 
@@ -438,11 +403,24 @@ if (passwordInput) passwordInput.placeholder = isTr ? "Şifre" : "Password";
 if (loginBtn) loginBtn.textContent = isTr ? "Giriş Yap" : "Sign In";
 if (registerBtn) registerBtn.textContent = isTr ? "Kalıcı Hesap Oluştur" : "Create Permanent Account";
 if (guestBtn) guestBtn.textContent = isTr ? "⚡ Hızlıca Gir (Kaydetmez)" : "⚡ Quick Enter (Not Saved)";
-if (foodGuideTitle) foodGuideTitle.textContent = isTr ? "🥙 Seferihisar Döner Rehberi" : "🥙 Seferihisar Doner Guide";
-if (locationBadge) locationBadge.textContent = isTr ? "📍 Konum: Seferihisar / İzmir" : "📍 Location: Seferihisar / Izmir";
-if (foodGuideSub) foodGuideSub.textContent = isTr
-? "Güncel menü fiyatları ve puanlar. Tek tıkla bütçenden düşebilirsin."
-: "Live menu prices & ratings. Deduct from your budget in one click.";
+if (guideKicker) guideKicker.textContent = isTr ? "AİLECE DAHA GÜÇLÜ" : "STRONGER TOGETHER";
+if (guideTitle) guideTitle.textContent = isTr ? "Birlikte daha dengeli bir bütçe" : "A more balanced budget, together";
+if (guideIntro) guideIntro.textContent = isTr
+    ? "Küçük alışkanlıklar, ailece büyük fark yaratır."
+    : "Small habits can make a big difference for your family.";
+if (guideTipTitle1) guideTipTitle1.textContent = isTr ? "Listeyle alışveriş yapın" : "Shop with a list";
+if (guideTipText1) guideTipText1.textContent = isTr
+    ? "Alışverişten önce ihtiyaçları birlikte belirleyin."
+    : "Agree on what you need before heading to the store.";
+if (guideTipTitle2) guideTipTitle2.textContent = isTr ? "Haftada 10 dakika ayırın" : "Set aside 10 minutes a week";
+if (guideTipText2) guideTipText2.textContent = isTr
+    ? "Gelir ve giderlerinize ailece göz atın."
+    : "Review your income and spending together.";
+if (guideTipTitle3) guideTipTitle3.textContent = isTr ? "Küçük birikimle başlayın" : "Start with a small saving";
+if (guideTipText3) guideTipText3.textContent = isTr
+    ? "Her gelirden ortak hedefiniz için pay ayırın."
+    : "Put aside a little from each income for a shared goal.";
+if (guideActionLabel) guideActionLabel.textContent = isTr ? "İlk işlemini ekle" : "Add your first transaction";
 if (title) title.textContent = isTr ? "💰 Aile Bütçe Asistanı" : "💰 Family Budget Assistant";
 if (balanceTitle) balanceTitle.textContent = isTr ? "Toplam Bakiye" : "Total Balance";
 if (totalIncomeLabel) totalIncomeLabel.textContent = isTr ? "Toplam Gelir" : "Total Income";
@@ -471,7 +449,6 @@ if (currentUser.isGuest) {
 welcomeUser.textContent = isTr ? "⚡ Misafir (Kaydetmez)" : "⚡ Guest (Not Saved)";
 }
 loadTransactions();
-renderLocalFoodList();
 }
 }
 if (languageButton) languageButton.addEventListener("click", toggleLanguage);
