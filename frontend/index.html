@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Budget & Local Food Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <link href="https://googleapis.com" rel="stylesheet">
+    <script src="https://cloudflare.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- AUTHENTICATION SCREEN -->
+    <section id="authSection" class="card auth-card">
+        <header class="header">
+            <h2 id="authTitle">🔐 Hesap Girişi</h2>
+            <button id="authLangBtn" class="lang-btn" type="button">EN</button>
+        </header>
+        <p id="authSubtitle" class="subtitle">Verilerinin kalıcı olması için giriş yap veya yeni hesap oluştur.</p>
+
+        <div class="form-group">
+            <input type="text" id="usernameInput" placeholder="Kullanıcı Adı" autocomplete="off">
+            <input type="password" id="passwordInput" placeholder="Şifre">
+            <button id="loginBtn" class="primary-btn" type="button">Giriş Yap</button>
+            <button id="registerBtn" class="secondary-btn" type="button">Kalıcı Hesap Oluştur</button>
+        </div>
+    </section>
+
+    <!-- 3-COLUMN MAIN DASHBOARD -->
+    <div id="dashboardSection" class="dashboard hidden">
+        
+        <!-- LEFT CARD: Seferihisar Local Food & Doner Guide -->
+        <aside class="card">
+            <header class="header">
+                <div>
+                    <h2 id="foodGuideTitle">🥙 Seferihisar Döner Rehberi</h2>
+                    <span class="user-badge" id="locationBadge">📍 Konum: Seferihisar / İzmir</span>
+                </div>
+            </header>
+
+            <p id="foodGuideSub" class="subtitle">Güncel menü fiyatları ve puanlar. Tek tıkla bütçenden düşebilirsin.</p>
+
+            <!-- Dynamic Local Doner List -->
+            <div id="localFoodList" class="food-list"></div>
+        </aside>
+
+        <!-- CENTER CARD: Budget & Transactions -->
+        <main class="card">
+            <header class="header">
+                <div>
+                    <h2 id="title">💰 Aile Bütçe Asistanı</h2>
+                    <span id="welcomeUser" class="user-badge"></span>
+                </div>
+                <div class="header-actions">
+                    <button id="languageButton" class="lang-btn" type="button">EN</button>
+                    <button id="logoutBtn" class="logout-btn" type="button">Çıkış</button>
+                </div>
+            </header>
+            
+            <section class="balance-card">
+                <span id="balanceTitle" class="balance-label">Toplam Bakiye</span>
+                <h1 id="totalBalance" class="balance-amount">0 TL</h1>
+            </section>
+
+            <section class="form-group">
+                <input type="text" id="description" placeholder="Açıklama (Örn: Market, Maaş)" autocomplete="off">
+                
+                <div class="row">
+                    <input type="number" id="amount" placeholder="Tutar (TL)" min="1" step="any">
+                    <select id="type">
+                        <option value="gelir" id="incomeOption">Gelir (+)</option>
+                        <option value="gider" id="expenseOption">Gider (-)</option>
+                    </select>
+                </div>
+                
+                <button id="addButton" class="primary-btn" type="button">İşlemi Ekle</button>
+            </section>
+
+            <ul id="transactionList"></ul>
+        </main>
+
+        <!-- RIGHT CARD: Analytics, Mini Stats & Bank Loan Simulator -->
+        <aside class="card">
+            <header class="header">
+                <h2 id="analyticsTitle">📊 Bütçe Analizi & Kredi</h2>
+            </header>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span id="totalIncomeLabel" class="stat-label">Toplam Gelir</span>
+                    <strong id="totalIncomeAmount" class="income-text">+0 TL</strong>
+                </div>
+                <div class="stat-box">
+                    <span id="totalExpenseLabel" class="stat-label">Toplam Gider</span>
+                    <strong id="totalExpenseAmount" class="expense-text">-0 TL</strong>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="budgetChart"></canvas>
+            </div>
+
+            <div class="simulator-box">
+                <h3 id="simTitle">🏦 Kredi & Taksit Simülatörü</h3>
+                <div class="form-group">
+                    <input type="number" id="loanAmount" placeholder="Kredi Tutarı (Örn: 1000000 TL)" min="1">
+                    <div class="row">
+                        <input type="number" id="loanMonths" placeholder="Vade (Ay - Örn: 24)" min="1" max="360">
+                        <input type="number" id="interestRate" placeholder="Aylık Faiz (%)" min="0" step="0.01" value="3.5">
+                    </div>
+                    <button id="calcLoanBtn" class="secondary-btn" type="button">Krediyi Hesapla</button>
+                </div>
+
+                <div id="simResult" class="sim-result hidden"></div>
+            </div>
+        </aside>
+
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
