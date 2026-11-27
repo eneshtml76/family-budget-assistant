@@ -8,4 +8,15 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<SavingsGoal> SavingsGoals { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SavingsGoal>()
+            .Property(goal => goal.TargetAmount)
+            .HasColumnType("TEXT");
+        modelBuilder.Entity<SavingsGoal>()
+            .Property(goal => goal.SavedAmount)
+            .HasColumnType("TEXT");
+    }
 }

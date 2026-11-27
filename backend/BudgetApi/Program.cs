@@ -37,34 +37,18 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
 
-    db.Database.OpenConnection();
-    try
-    {
-        var connection = db.Database.GetDbConnection();
-        using var command = connection.CreateCommand();
-        command.CommandText = "PRAGMA table_info('Transactions')";
-        using var reader = command.ExecuteReader();
-        var hasCategoryColumn = false;
-        while (reader.Read())
-        {
-            if (reader.GetString(1) == "Category")
-            {
-                hasCategoryColumn = true;
-                break;
-            }
-        }
-
-        reader.Close();
-        if (!hasCategoryColumn)
-        {
-            db.Database.ExecuteSqlRaw(
-                "ALTER TABLE Transactions ADD COLUMN Category TEXT NOT NULL DEFAULT 'other'");
-        }
-    }
-    finally
-    {
-        db.Database.CloseConnection();
-    }
+    EnsureColumn(db, "Transactions", "Category", "TEXT NOT NULL DEFAULT 'other'");
+    EnsureColumn(db, "Transactions", "CreatedAt", "TEXT NULL");
+    db.Database.ExecuteSqlRaw(
+        """
+        CREATE TABLE IF NOT EXISTS "SavingsGoals" (
+            "Id" INTEGER NOT NULL CONSTRAINT "PK_SavingsGoals" PRIMARY KEY AUTOINCREMENT,
+            "UserId" INTEGER NOT NULL,
+            "Name" TEXT NOT NULL,
+            "TargetAmount" TEXT NOT NULL,
+            "SavedAmount" TEXT NOT NULL
+        )
+        """);
 }
 
 // Configure the HTTP request pipeline.
@@ -81,3 +65,39 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void EnsureColumn(AppDbContext db, string tableName, string columnName, string columnDefinition)
+{
+    db.Database.OpenConnection();
+    try
+    {
+        var connection = db.Database.GetDbConnection();
+        using var command = connection.CreateCommand();
+        command.CommandText = $"PRAGMA table_info(\"{tableName}\")";
+
+        var columnExists = false;
+        using (var reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                if (reader.GetString(1) == columnName)
+                {
+                    columnExists = true;
+                    break;
+                }
+            }
+        }
+
+        if (!columnExists)
+        {
+            using var alterCommand = connection.CreateCommand();
+            alterCommand.CommandText =
+                $"ALTER TABLE \"{tableName}\" ADD COLUMN \"{columnName}\" {columnDefinition}";
+            alterCommand.ExecuteNonQuery();
+        }
+    }
+    finally
+    {
+        db.Database.CloseConnection();
+    }
+}

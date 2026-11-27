@@ -20,7 +20,10 @@
     <section id="authSection" class="card auth-card">
         <header class="header">
             <h2 id="authTitle">🔐 Hesap Girişi</h2>
-            <button id="authLangBtn" class="lang-btn" type="button">EN</button>
+            <div class="header-actions">
+                <button class="theme-toggle" type="button" aria-label="Koyu temayı aç">🌙</button>
+                <button id="authLangBtn" class="lang-btn" type="button">EN</button>
+            </div>
         </header>
         <p id="authSubtitle" class="subtitle">Verilerinin kalıcı olması için giriş yap veya yeni hesap oluştur.</p>
 
@@ -93,6 +96,19 @@
             </section>
             <p id="guidePlanNote" class="guide-plan-note">Tüm kayıtlı işlemlere göre hesaplanır; aylık değildir. Ailenize göre uyarlayın.</p>
 
+            <section class="savings-goals">
+                <div class="savings-goals-heading">
+                    <h3 id="savingsGoalsTitle">🎯 Birikim hedeflerim</h3>
+                    <button id="showGoalFormButton" class="small-action-btn" type="button">+ Hedef</button>
+                </div>
+                <div id="goalForm" class="goal-form hidden">
+                    <input id="goalNameInput" type="text" maxlength="60" placeholder="Hedef adı (Örn: Tatil)">
+                    <input id="goalTargetInput" type="number" min="1" step="any" placeholder="Hedef tutarı (TL)">
+                    <button id="saveGoalButton" class="primary-btn" type="button">Hedefi kaydet</button>
+                </div>
+                <div id="savingsGoalsList" class="savings-goals-list"></div>
+            </section>
+
             <button id="guideActionButton" class="guide-action-btn" type="button">
                 <span id="guideActionLabel">İlk işlemini ekle</span>
                 <span aria-hidden="true">→</span>
@@ -107,6 +123,7 @@
                     <span id="welcomeUser" class="user-badge"></span>
                 </div>
                 <div class="header-actions">
+                    <button class="theme-toggle" type="button" aria-label="Koyu temayı aç">🌙</button>
                     <button id="exportButton" class="export-btn" type="button" aria-label="İşlemleri indir">
                         <span aria-hidden="true">↓</span>
                         <span id="exportButtonLabel">İndir</span>
@@ -134,8 +151,28 @@
                 <select id="category" aria-label="İşlem kategorisi"></select>
                 
                 <button id="addButton" class="primary-btn" type="button">İşlemi Ekle</button>
+                <button id="cancelEditButton" class="secondary-btn hidden" type="button">Düzenlemeyi iptal et</button>
             </section>
 
+            <section class="transaction-filters" aria-label="İşlem filtreleri">
+                <input id="transactionSearch" type="search" placeholder="İşlemlerde ara" aria-label="İşlemlerde ara">
+                <div class="row">
+                    <select id="transactionTypeFilter" aria-label="İşlem türüne göre filtrele">
+                        <option id="filterAllTypes" value="all">Tüm türler</option>
+                        <option id="filterIncomeType" value="gelir">Gelir</option>
+                        <option id="filterExpenseType" value="gider">Gider</option>
+                    </select>
+                    <select id="transactionCategoryFilter" aria-label="Kategoriye göre filtrele">
+                        <option value="all">Tüm kategoriler</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <input id="transactionDateFrom" type="date" aria-label="Başlangıç tarihi">
+                    <input id="transactionDateTo" type="date" aria-label="Bitiş tarihi">
+                </div>
+                <button id="clearFiltersButton" class="filter-clear-btn" type="button">Filtreleri temizle</button>
+            </section>
+            <p id="transactionEmptyMessage" class="category-empty hidden"></p>
             <ul id="transactionList"></ul>
         </main>
 
@@ -145,13 +182,18 @@
                 <h2 id="analyticsTitle">📊 Bütçe Analizi & Kredi</h2>
             </header>
 
+            <section class="monthly-analysis">
+                <div class="monthly-analysis-heading">
+                    <h3 id="monthlyAnalysisTitle">📅 Aylık finansal analiz</h3>
+                    <input id="analysisMonth" type="month" aria-label="Analiz ayı">
+                </div>
             <div class="stats-row">
                 <div class="stat-box">
-                    <span id="totalIncomeLabel" class="stat-label">Toplam Gelir</span>
+                    <span id="totalIncomeLabel" class="stat-label">Bu Ayın Geliri</span>
                     <strong id="totalIncomeAmount" class="income-text">+0 TL</strong>
                 </div>
                 <div class="stat-box">
-                    <span id="totalExpenseLabel" class="stat-label">Toplam Gider</span>
+                    <span id="totalExpenseLabel" class="stat-label">Bu Ayın Gideri</span>
                     <strong id="totalExpenseAmount" class="expense-text">-0 TL</strong>
                 </div>
             </div>
@@ -159,6 +201,22 @@
             <div class="chart-container">
                 <canvas id="budgetChart"></canvas>
             </div>
+                <div class="monthly-metrics">
+                    <div class="monthly-metric">
+                        <span id="monthlyComparisonLabel">Önceki aya göre</span>
+                        <strong id="monthlyComparison">Karşılaştırma için veri yok</strong>
+                    </div>
+                    <div class="monthly-metric">
+                        <span id="topExpenseCategoryLabel">En çok harcanan kategori</span>
+                        <strong id="topExpenseCategory">Henüz gider yok</strong>
+                    </div>
+                    <div class="monthly-metric">
+                        <span id="monthlySavingsRateLabel">Tasarruf oranı</span>
+                        <strong id="monthlySavingsRate">0%</strong>
+                    </div>
+                </div>
+                <p id="monthlyAnalysisNote" class="monthly-analysis-note">Tarih bilgisi olmayan eski işlemler aylık analize dahil edilmez.</p>
+            </section>
 
             <section class="category-summary">
                 <h3 id="categorySummaryTitle">🧾 Harcama Kategorileri</h3>

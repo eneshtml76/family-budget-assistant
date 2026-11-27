@@ -59,10 +59,54 @@ export async function createTransaction(transactionData) {
     return await response.json();
 }
 
+// Update a transaction while keeping its original creation date.
+export async function updateTransaction(id, transactionData) {
+    const response = await fetch(`${BASE_URL}/transactions/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(transactionData)
+    });
+    if (!response.ok) throw new Error("Failed to update transaction");
+    return await response.json();
+}
+
 // Delete a transaction by ID from cloud database
 export async function removeTransaction(id) {
     const response = await fetch(`${BASE_URL}/transactions/${id}`, {
         method: "DELETE"
     });
     if (!response.ok) throw new Error("Failed to delete transaction");
+}
+
+export async function fetchSavingsGoals(userId) {
+    const response = await fetch(`${BASE_URL}/savingsgoals/${userId}`);
+    if (!response.ok) throw new Error("Failed to fetch savings goals");
+    return await response.json();
+}
+
+export async function createSavingsGoal(goalData) {
+    const response = await fetch(`${BASE_URL}/savingsgoals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(goalData)
+    });
+    if (!response.ok) throw new Error("Failed to save savings goal");
+    return await response.json();
+}
+
+export async function contributeToSavingsGoal(id, userId, contributionAmount) {
+    const response = await fetch(`${BASE_URL}/savingsgoals/${id}/contributions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, amount: contributionAmount })
+    });
+    if (!response.ok) throw new Error("Failed to update savings goal");
+    return await response.json();
+}
+
+export async function removeSavingsGoal(id, userId) {
+    const response = await fetch(`${BASE_URL}/savingsgoals/${id}?userId=${encodeURIComponent(userId)}`, {
+        method: "DELETE"
+    });
+    if (!response.ok) throw new Error("Failed to delete savings goal");
 }

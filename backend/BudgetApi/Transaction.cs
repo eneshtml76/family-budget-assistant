@@ -9,4 +9,5 @@ public class Transaction
     public decimal Amount { get; set; }
     public string Type { get; set; } = string.Empty; // "gelir" or "gider"
     public string Category { get; set; } = "other";
+    public DateTime? CreatedAt { get; set; }
 }
