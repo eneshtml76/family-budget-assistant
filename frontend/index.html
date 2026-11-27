@@ -40,8 +40,8 @@
         <aside class="card family-guide-card">
             <section class="family-guide-hero">
                 <span id="guideKicker" class="guide-kicker">AİLECE DAHA GÜÇLÜ</span>
-                <h2 id="guideTitle">Birlikte daha dengeli bir bütçe</h2>
-                <p id="guideIntro">Küçük alışkanlıklar, ailece büyük fark yaratır.</p>
+                <h2 id="guideTitle">Ailece hedeflere doğru</h2>
+                <p id="guideIntro">Geliri ihtiyaçlara, keyfe ve geleceğe dengeli ayırın.</p>
                 <div class="guide-family-art" aria-hidden="true">
                     <span>🏡</span>
                     <span>💚</span>
@@ -49,29 +49,49 @@
                 </div>
             </section>
 
-            <div class="guide-tips">
-                <article class="guide-tip">
-                    <span class="guide-tip-icon" aria-hidden="true">🛒</span>
-                    <div>
-                        <h3 id="guideTipTitle1">Listeyle alışveriş yapın</h3>
-                        <p id="guideTipText1">Alışverişten önce ihtiyaçları birlikte belirleyin.</p>
+            <section class="guide-budget-plan">
+                <h3 id="guidePlanTitle" class="guide-plan-title">Gelirine göre önerilen hedefler</h3>
+                <article class="budget-rule needs-rule">
+                    <div class="budget-rule-heading">
+                        <span class="budget-rule-percent">50%</span>
+                        <div>
+                            <h4 id="guideNeedsTitle">Temel ihtiyaçlar</h4>
+                            <p id="guideNeedsText">Kira, faturalar, market, ulaşım ve diğer</p>
+                        </div>
+                    </div>
+                    <p id="guideNeedsAmount" class="budget-rule-value"></p>
+                    <div id="guideNeedsMeter" class="budget-rule-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span id="guideNeedsMeterFill"></span>
                     </div>
                 </article>
-                <article class="guide-tip">
-                    <span class="guide-tip-icon" aria-hidden="true">🗓️</span>
-                    <div>
-                        <h3 id="guideTipTitle2">Haftada 10 dakika ayırın</h3>
-                        <p id="guideTipText2">Gelir ve giderlerinize ailece göz atın.</p>
+                <article class="budget-rule wants-rule">
+                    <div class="budget-rule-heading">
+                        <span class="budget-rule-percent">30%</span>
+                        <div>
+                            <h4 id="guideWantsTitle">İstekler ve keyif</h4>
+                            <p id="guideWantsText">Yeme-içme, giyim, eğlence</p>
+                        </div>
+                    </div>
+                    <p id="guideWantsAmount" class="budget-rule-value"></p>
+                    <div id="guideWantsMeter" class="budget-rule-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span id="guideWantsMeterFill"></span>
                     </div>
                 </article>
-                <article class="guide-tip">
-                    <span class="guide-tip-icon" aria-hidden="true">🌱</span>
-                    <div>
-                        <h3 id="guideTipTitle3">Küçük birikimle başlayın</h3>
-                        <p id="guideTipText3">Her gelirden ortak hedefiniz için pay ayırın.</p>
+                <article class="budget-rule savings-rule">
+                    <div class="budget-rule-heading">
+                        <span class="budget-rule-percent">20%</span>
+                        <div>
+                            <h4 id="guideSavingsTitle">Kalan bakiye</h4>
+                            <p id="guideSavingsText">Gelirin %20'si birikim hedefi</p>
+                        </div>
+                    </div>
+                    <p id="guideSavingsAmount" class="budget-rule-value"></p>
+                    <div id="guideSavingsMeter" class="budget-rule-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span id="guideSavingsMeterFill"></span>
                     </div>
                 </article>
-            </div>
+            </section>
+            <p id="guidePlanNote" class="guide-plan-note">Tüm kayıtlı işlemlere göre hesaplanır; aylık değildir. Ailenize göre uyarlayın.</p>
 
             <button id="guideActionButton" class="guide-action-btn" type="button">
                 <span id="guideActionLabel">İlk işlemini ekle</span>

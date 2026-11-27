@@ -719,45 +719,95 @@ li {
     font-size: 16px;
 }
 
-.guide-tips {
+.guide-budget-plan {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    margin: 14px 0 16px;
+    gap: 12px;
+    margin: 20px 0 12px;
 }
 
-.guide-tip {
+.guide-plan-title {
+    margin-bottom: 2px;
+    color: #78867e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.budget-rule {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.budget-rule-heading {
     display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    align-items: start;
-    gap: 11px;
-    padding: 12px 2px;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
 }
 
-.guide-tip + .guide-tip {
-    border-top: 1px solid #edf0ec;
-}
-
-.guide-tip-icon {
+.budget-rule-percent {
     display: grid;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     place-items: center;
-    border-radius: 12px;
-    background: #edf7f0;
-    font-size: 17px;
+    border-radius: 13px;
+    background: #eff5f0;
+    color: #26734f;
+    font-size: 13px;
+    font-weight: 800;
 }
 
-.guide-tip h3 {
-    margin: 1px 0 4px;
+.budget-rule h4 {
+    margin: 0 0 3px;
     color: #2b3d33;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.35;
 }
 
-.guide-tip p {
+.budget-rule p {
+    margin: 0;
     color: #78867e;
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.budget-rule .budget-rule-value {
+    color: #68776e;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.budget-rule-meter {
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #eef2ee;
+}
+
+.budget-rule-meter span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.35s ease, background-color 0.2s ease;
+}
+
+.needs-rule .budget-rule-percent { color: #3974d8; background: #edf3fd; }
+.needs-rule .budget-rule-meter span { width: 50%; background: #5791e7; }
+.wants-rule .budget-rule-percent { color: #ad7416; background: #fbf4e7; }
+.wants-rule .budget-rule-meter span { width: 30%; background: #e8b44e; }
+.savings-rule .budget-rule-percent { color: #15815a; background: #edf7f0; }
+.savings-rule .budget-rule-meter span { width: 20%; background: #36a978; }
+.budget-rule.is-over .budget-rule-value { color: #d25252; }
+.budget-rule.is-over .budget-rule-meter span { background: #e05b55; }
+
+.guide-plan-note {
+    margin: 0 0 16px;
+    color: #78867e;
+    font-size: 10px;
     line-height: 1.5;
 }
 

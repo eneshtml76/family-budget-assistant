@@ -50,12 +50,23 @@ const simTitle = document.getElementById("simTitle");
 const guideKicker = document.getElementById("guideKicker");
 const guideTitle = document.getElementById("guideTitle");
 const guideIntro = document.getElementById("guideIntro");
-const guideTipTitle1 = document.getElementById("guideTipTitle1");
-const guideTipText1 = document.getElementById("guideTipText1");
-const guideTipTitle2 = document.getElementById("guideTipTitle2");
-const guideTipText2 = document.getElementById("guideTipText2");
-const guideTipTitle3 = document.getElementById("guideTipTitle3");
-const guideTipText3 = document.getElementById("guideTipText3");
+const guidePlanTitle = document.getElementById("guidePlanTitle");
+const guideNeedsTitle = document.getElementById("guideNeedsTitle");
+const guideNeedsText = document.getElementById("guideNeedsText");
+const guideNeedsAmount = document.getElementById("guideNeedsAmount");
+const guideNeedsMeter = document.getElementById("guideNeedsMeter");
+const guideNeedsMeterFill = document.getElementById("guideNeedsMeterFill");
+const guideWantsTitle = document.getElementById("guideWantsTitle");
+const guideWantsText = document.getElementById("guideWantsText");
+const guideWantsAmount = document.getElementById("guideWantsAmount");
+const guideWantsMeter = document.getElementById("guideWantsMeter");
+const guideWantsMeterFill = document.getElementById("guideWantsMeterFill");
+const guideSavingsTitle = document.getElementById("guideSavingsTitle");
+const guideSavingsText = document.getElementById("guideSavingsText");
+const guideSavingsAmount = document.getElementById("guideSavingsAmount");
+const guideSavingsMeter = document.getElementById("guideSavingsMeter");
+const guideSavingsMeterFill = document.getElementById("guideSavingsMeterFill");
+const guidePlanNote = document.getElementById("guidePlanNote");
 const guideActionButton = document.getElementById("guideActionButton");
 const guideActionLabel = document.getElementById("guideActionLabel");
 
@@ -132,6 +143,41 @@ function renderCategorySummary(transactions) {
         row.append(label, amountLabel);
         categorySummary.appendChild(row);
     });
+}
+
+function updateBudgetRule(actual, target, amountElement, meter, meterFill, trLabel, enLabel) {
+    const progress = target > 0 ? Math.max(0, Math.min(100, (actual / target) * 100)) : 0;
+    amountElement.textContent = currentLang === "tr"
+        ? trLabel + " " + actual.toLocaleString("tr-TR") + " / hedef " + target.toLocaleString("tr-TR") + " TL"
+        : enLabel + " " + actual.toLocaleString("en-US") + " / target " + target.toLocaleString("en-US") + " TL";
+    meter.setAttribute("aria-valuenow", progress.toFixed(0));
+    meterFill.style.width = progress + "%";
+    meter.closest(".budget-rule").classList.toggle("is-over", target > 0 && actual > target);
+}
+
+function renderBudgetPlan(transactions, totalIncome, remainingBalance) {
+    const expenseTotals = new Map();
+    transactions.filter((item) => item.type === "gider").forEach((item) => {
+        const categoryId = categories[item.category] ? item.category : "other";
+        expenseTotals.set(categoryId, (expenseTotals.get(categoryId) || 0) + item.amount);
+    });
+
+    const needs = ["groceries", "bills", "housing", "transport", "health", "education", "other"]
+        .reduce((total, categoryId) => total + (expenseTotals.get(categoryId) || 0), 0);
+    const wants = ["dining", "clothing", "entertainment"]
+        .reduce((total, categoryId) => total + (expenseTotals.get(categoryId) || 0), 0);
+
+    updateBudgetRule(needs, totalIncome * 0.5, guideNeedsAmount, guideNeedsMeter, guideNeedsMeterFill, "Harcanan", "Spent");
+    updateBudgetRule(wants, totalIncome * 0.3, guideWantsAmount, guideWantsMeter, guideWantsMeterFill, "Harcanan", "Spent");
+    updateBudgetRule(remainingBalance, totalIncome * 0.2, guideSavingsAmount, guideSavingsMeter, guideSavingsMeterFill, "Kalan", "Remaining");
+
+    guidePlanNote.textContent = totalIncome > 0
+        ? (currentLang === "tr"
+            ? "Tüm kayıtlı işlemlere göre hesaplanır; aylık değildir. Ailenize göre uyarlayın."
+            : "Based on all recorded transactions, not monthly. Adjust it to your family.")
+        : (currentLang === "tr"
+            ? "Hedefleri görmek için önce Gelir (+) işlemi ekleyin."
+            : "Add an income (+) transaction to see your targets.");
 }
 
 type.addEventListener("change", () => renderCategoryOptions());
@@ -250,6 +296,7 @@ async function loadTransactions() {
 
         updateChart(totalIncome, totalExpense, currentLang === "tr");
         renderCategorySummary(transactions);
+        renderBudgetPlan(transactions, totalIncome, balance);
     } catch (error) {
         console.error("Error loading transactions:", error);
     }
@@ -404,22 +451,26 @@ if (loginBtn) loginBtn.textContent = isTr ? "Giriş Yap" : "Sign In";
 if (registerBtn) registerBtn.textContent = isTr ? "Kalıcı Hesap Oluştur" : "Create Permanent Account";
 if (guestBtn) guestBtn.textContent = isTr ? "⚡ Hızlıca Gir (Kaydetmez)" : "⚡ Quick Enter (Not Saved)";
 if (guideKicker) guideKicker.textContent = isTr ? "AİLECE DAHA GÜÇLÜ" : "STRONGER TOGETHER";
-if (guideTitle) guideTitle.textContent = isTr ? "Birlikte daha dengeli bir bütçe" : "A more balanced budget, together";
+if (guideTitle) guideTitle.textContent = isTr ? "Ailece hedeflere doğru" : "Family goals, made together";
 if (guideIntro) guideIntro.textContent = isTr
-    ? "Küçük alışkanlıklar, ailece büyük fark yaratır."
-    : "Small habits can make a big difference for your family.";
-if (guideTipTitle1) guideTipTitle1.textContent = isTr ? "Listeyle alışveriş yapın" : "Shop with a list";
-if (guideTipText1) guideTipText1.textContent = isTr
-    ? "Alışverişten önce ihtiyaçları birlikte belirleyin."
-    : "Agree on what you need before heading to the store.";
-if (guideTipTitle2) guideTipTitle2.textContent = isTr ? "Haftada 10 dakika ayırın" : "Set aside 10 minutes a week";
-if (guideTipText2) guideTipText2.textContent = isTr
-    ? "Gelir ve giderlerinize ailece göz atın."
-    : "Review your income and spending together.";
-if (guideTipTitle3) guideTipTitle3.textContent = isTr ? "Küçük birikimle başlayın" : "Start with a small saving";
-if (guideTipText3) guideTipText3.textContent = isTr
-    ? "Her gelirden ortak hedefiniz için pay ayırın."
-    : "Put aside a little from each income for a shared goal.";
+    ? "Geliri ihtiyaçlara, keyfe ve geleceğe dengeli ayırın."
+    : "Balance today's needs, little joys, and tomorrow's goals.";
+if (guidePlanTitle) guidePlanTitle.textContent = isTr ? "Gelirine göre önerilen hedefler" : "Suggested targets from income";
+if (guideNeedsTitle) guideNeedsTitle.textContent = isTr ? "Temel ihtiyaçlar" : "Needs";
+if (guideNeedsText) guideNeedsText.textContent = isTr
+    ? "Kira, faturalar, market, ulaşım ve diğer"
+    : "Housing, bills, groceries, transport, other";
+if (guideWantsTitle) guideWantsTitle.textContent = isTr ? "İstekler ve keyif" : "Wants and fun";
+if (guideWantsText) guideWantsText.textContent = isTr
+    ? "Yeme-içme, giyim, eğlence"
+    : "Dining, clothing, entertainment";
+if (guideSavingsTitle) guideSavingsTitle.textContent = isTr ? "Kalan bakiye" : "Remaining balance";
+if (guideSavingsText) guideSavingsText.textContent = isTr
+    ? "Gelirin %20'si birikim hedefi"
+    : "20% of income is the savings target";
+if (guidePlanNote) guidePlanNote.textContent = isTr
+    ? "Tüm kayıtlı işlemlere göre hesaplanır; aylık değildir. Ailenize göre uyarlayın."
+    : "Based on all recorded transactions, not monthly. Adjust it to your family.";
 if (guideActionLabel) guideActionLabel.textContent = isTr ? "İlk işlemini ekle" : "Add your first transaction";
 if (title) title.textContent = isTr ? "💰 Aile Bütçe Asistanı" : "💰 Family Budget Assistant";
 if (balanceTitle) balanceTitle.textContent = isTr ? "Toplam Bakiye" : "Total Balance";
