@@ -7,13 +7,12 @@ const configuredApiUrl = document
     ?.content
     ?.trim();
 
-// Set api-base-url in frontend/index.html to the public Railway/hosting URL.
-// Local development automatically uses the ASP.NET Core API on port 5098.
+// The meta tag can override the production API URL. Local development uses port 5098.
 const BASE_URL = configuredApiUrl
     ? configuredApiUrl.replace(/\/$/, "") + "/api"
     : isLocalFrontend
         ? "http://localhost:5098/api"
-        : "/api";
+        : "https://family-budget-assistant-production.up.railway.app/api";
 
 // Register a new user account on cloud SQLite
 export async function registerUser(username, password) {
