@@ -1,7 +1,7 @@
+// Live C# Backend API hosted on Railway Cloud
 const BASE_URL = "https://railway.app";
 
-
-// Register a new user account
+// Register a new user account on cloud SQLite
 export async function registerUser(username, password) {
     const response = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
@@ -23,21 +23,19 @@ export async function loginUser(username, password) {
         body: JSON.stringify({ username, password })
     });
     if (!response.ok) {
-        const msg = await response.text();
-        throw new Error(msg || "Login failed");
+        throw new Error("Invalid username or password.");
     }
     return await response.json();
 }
 
-// Fetch all transactions for a specific user
+// Fetch all transactions for a specific user from cloud database
 export async function fetchTransactions(userId) {
     const response = await fetch(`${BASE_URL}/transactions/${userId}`);
     if (!response.ok) throw new Error("Failed to fetch transactions");
     return await response.json();
 }
 
-
-// Create a new transaction linked to the user
+// Create a new transaction on cloud database
 export async function createTransaction(transactionData) {
     const response = await fetch(`${BASE_URL}/transactions`, {
         method: "POST",
@@ -48,7 +46,7 @@ export async function createTransaction(transactionData) {
     return await response.json();
 }
 
-// Delete a transaction by ID
+// Delete a transaction by ID from cloud database
 export async function removeTransaction(id) {
     const response = await fetch(`${BASE_URL}/transactions/${id}`, {
         method: "DELETE"
