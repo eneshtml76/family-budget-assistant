@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="api-base-url" content="">
     <title>Family Budget & Local Food Assistant</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
-    <link href="https://googleapis.com" rel="stylesheet">
-    <script src="https://cloudflare.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,6 +27,7 @@
             <input type="password" id="passwordInput" placeholder="Şifre">
             <button id="loginBtn" class="primary-btn" type="button">Giriş Yap</button>
             <button id="registerBtn" class="secondary-btn" type="button">Kalıcı Hesap Oluştur</button>
+            <button id="guestBtn" class="guest-btn" type="button">⚡ Hızlıca Gir (Kaydetmez)</button>
         </div>
     </section>
 
@@ -56,14 +60,6 @@
                     <button id="languageButton" class="lang-btn" type="button">EN</button>
                     <button id="logoutBtn" class="logout-btn" type="button">Çıkış</button>
                 </div>
-               <div class="form-group">
-                <input type="text" id="usernameInput" placeholder="Kullanıcı Adı" autocomplete="off">
-                <input type="password" id="passwordInput" placeholder="Şifre">
-                <button id="loginBtn" class="primary-btn" type="button">Giriş Yap</button>
-                <button id="registerBtn" class="secondary-btn" type="button">Kalıcı Hesap Oluştur</button>
-                <button id="guestBtn" class="guest-btn" type="button">⚡ Hızlıca Gir (Kaydetmez)</button>
-               </div>
-
             </header>
             
             <section class="balance-card">
