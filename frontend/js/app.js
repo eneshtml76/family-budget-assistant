@@ -22,8 +22,10 @@ const totalExpenseAmount = document.getElementById("totalExpenseAmount");
 const description = document.getElementById("description");
 const amount = document.getElementById("amount");
 const type = document.getElementById("type");
+const category = document.getElementById("category");
 const addButton = document.getElementById("addButton");
 const transactionList = document.getElementById("transactionList");
+const categorySummary = document.getElementById("categorySummary");
 
 // Loan Simulator DOM Elements
 const loanAmountInput = document.getElementById("loanAmount");
@@ -44,6 +46,7 @@ const totalExpenseLabel = document.getElementById("totalExpenseLabel");
 const incomeOption = document.getElementById("incomeOption");
 const expenseOption = document.getElementById("expenseOption");
 const analyticsTitle = document.getElementById("analyticsTitle");
+const categorySummaryTitle = document.getElementById("categorySummaryTitle");
 const simTitle = document.getElementById("simTitle");
 const foodGuideTitle = document.getElementById("foodGuideTitle");
 const foodGuideSub = document.getElementById("foodGuideSub");
@@ -55,6 +58,77 @@ let guestTransactions = [];
 let currentTransactions = [];
 let balance = 0;
 let currentLang = "tr";
+
+const categories = {
+    groceries: { tr: "Market", en: "Groceries", icon: "🛒" },
+    bills: { tr: "Faturalar", en: "Bills", icon: "🧾" },
+    housing: { tr: "Kira & Ev", en: "Housing", icon: "🏠" },
+    transport: { tr: "Ulaşım", en: "Transport", icon: "🚌" },
+    dining: { tr: "Yeme-İçme", en: "Dining", icon: "🍽️" },
+    health: { tr: "Sağlık", en: "Health", icon: "💊" },
+    education: { tr: "Eğitim", en: "Education", icon: "📚" },
+    clothing: { tr: "Giyim", en: "Clothing", icon: "👕" },
+    entertainment: { tr: "Eğlence", en: "Entertainment", icon: "🎬" },
+    salary: { tr: "Maaş", en: "Salary", icon: "💼" },
+    extra_income: { tr: "Ek Gelir", en: "Extra Income", icon: "✨" },
+    other: { tr: "Diğer", en: "Other", icon: "📦" }
+};
+
+function categoryLabel(categoryId) {
+    const item = categories[categoryId] || categories.other;
+    return (currentLang === "tr" ? item.tr : item.en);
+}
+
+function renderCategoryOptions(selectedCategory) {
+    const isIncome = type.value === "gelir";
+    const allowedCategories = isIncome
+        ? ["salary", "extra_income", "other"]
+        : ["groceries", "bills", "housing", "transport", "dining", "health", "education", "clothing", "entertainment", "other"];
+    category.replaceChildren();
+    allowedCategories.forEach((categoryId) => {
+        const option = document.createElement("option");
+        option.value = categoryId;
+        option.textContent = categoryLabel(categoryId);
+        category.appendChild(option);
+    });
+    category.value = allowedCategories.includes(selectedCategory)
+        ? selectedCategory
+        : (isIncome ? "salary" : "groceries");
+}
+
+function renderCategorySummary(transactions) {
+    if (!categorySummary) return;
+    const totals = new Map();
+    transactions.filter((item) => item.type === "gider").forEach((item) => {
+        const categoryId = categories[item.category] ? item.category : "other";
+        totals.set(categoryId, (totals.get(categoryId) || 0) + item.amount);
+    });
+
+    categorySummary.replaceChildren();
+    const sortedTotals = [...totals.entries()].sort((a, b) => b[1] - a[1]);
+    if (sortedTotals.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "category-empty";
+        emptyMessage.textContent = currentLang === "tr" ? "Henüz gider kaydı yok." : "No expenses yet.";
+        categorySummary.appendChild(emptyMessage);
+        return;
+    }
+
+    sortedTotals.forEach(([categoryId, total]) => {
+        const row = document.createElement("div");
+        row.className = "category-row";
+        const label = document.createElement("span");
+        label.className = "category-name";
+        label.textContent = categories[categoryId].icon + " " + categoryLabel(categoryId);
+        const amountLabel = document.createElement("strong");
+        amountLabel.textContent = total.toLocaleString("tr-TR") + " TL";
+        row.append(label, amountLabel);
+        categorySummary.appendChild(row);
+    });
+}
+
+type.addEventListener("change", () => renderCategoryOptions());
+renderCategoryOptions();
 
 // Check if user is already logged in on page load
 function checkSession() {
@@ -109,14 +183,16 @@ function renderLocalFoodList() {
                         id: Date.now(),
                         description: spot.name + " (" + spot.item + ")",
                         amount: spot.price,
-                        type: "gider"
+                        type: "gider",
+                        category: "dining"
                     });
                 } else {
                     await createTransaction({
                         userId: currentUser.userId,
                         description: spot.name + " (" + spot.item + ")",
                         amount: spot.price,
-                        type: "gider"
+                        type: "gider",
+                        category: "dining"
                     });
                 }
                 await loadTransactions();
@@ -200,7 +276,7 @@ async function loadTransactions() {
                 balance -= item.amount;
                 totalExpense += item.amount;
             }
-            renderTransactionItem(item.id, item.description, item.amount, item.type);
+            renderTransactionItem(item.id, item.description, item.amount, item.type, item.category);
         });
 
         totalBalance.textContent = balance.toLocaleString("tr-TR") + " TL";
@@ -208,6 +284,7 @@ async function loadTransactions() {
         if (totalExpenseAmount) totalExpenseAmount.textContent = "-" + totalExpense.toLocaleString("tr-TR") + " TL";
 
         updateChart(totalIncome, totalExpense, currentLang === "tr");
+        renderCategorySummary(transactions);
     } catch (error) {
         console.error("Error loading transactions:", error);
     }
@@ -217,10 +294,11 @@ function downloadTransactions() {
     const isTr = currentLang === "tr";
     const delimiter = ";";
     const rows = [
-        isTr ? ["Açıklama", "Tür", "Tutar (TL)"] : ["Description", "Type", "Amount (TL)"],
+        isTr ? ["Açıklama", "Tür", "Kategori", "Tutar (TL)"] : ["Description", "Type", "Category", "Amount (TL)"],
         ...currentTransactions.map((transaction) => [
             transaction.description,
             transaction.type === "gelir" ? (isTr ? "Gelir" : "Income") : (isTr ? "Gider" : "Expense"),
+            categoryLabel(transaction.category),
             transaction.amount
         ])
     ];
@@ -244,11 +322,18 @@ function downloadTransactions() {
 
 if (exportButton) exportButton.addEventListener("click", downloadTransactions);
 
-function renderTransactionItem(id, descValue, amnt, typeValue) {
+function renderTransactionItem(id, descValue, amnt, typeValue, categoryValue) {
     const listItem = document.createElement("li");
 
+    const descriptionGroup = document.createElement("div");
+    descriptionGroup.className = "transaction-description";
     const descSpan = document.createElement("span");
+    descSpan.className = "transaction-name";
     descSpan.textContent = descValue;
+    const categorySpan = document.createElement("span");
+    categorySpan.className = "transaction-category";
+    categorySpan.textContent = categoryLabel(categoryValue);
+    descriptionGroup.append(descSpan, categorySpan);
 
     const rightDiv = document.createElement("div");
     rightDiv.className = "item-right";
@@ -272,7 +357,7 @@ function renderTransactionItem(id, descValue, amnt, typeValue) {
 
     rightDiv.appendChild(amountSpan);
     rightDiv.appendChild(delBtn);
-    listItem.appendChild(descSpan);
+    listItem.appendChild(descriptionGroup);
     listItem.appendChild(rightDiv);
     transactionList.prepend(listItem);
 }
@@ -283,34 +368,38 @@ if (addButton) {
         const descValue = description.value.trim();
         const amnt = Number(amount.value);
         const typeValue = type.value;
+        const categoryValue = category.value;
 
         if (descValue === "" || amnt <= 0) {
             alert(currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
-return;
-}
-try {
-if (currentUser.isGuest) {
-guestTransactions.push({
-id: Date.now(),
-description: descValue,
-amount: amnt,
-type: typeValue
-});
-} else {
-await createTransaction({
-userId: currentUser.userId,
-description: descValue,
-amount: amnt,
-type: typeValue
-});
-}
-description.value = "";
-amount.value = "";
-await loadTransactions();
-} catch (error) {
-alert(currentLang === "tr" ? "Sunucuya bağlanılamadı!" : "Could not connect to server!");
-}
-});
+            return;
+        }
+
+        try {
+            if (currentUser.isGuest) {
+                guestTransactions.push({
+                    id: Date.now(),
+                    description: descValue,
+                    amount: amnt,
+                    type: typeValue,
+                    category: categoryValue
+                });
+            } else {
+                await createTransaction({
+                    userId: currentUser.userId,
+                    description: descValue,
+                    amount: amnt,
+                    type: typeValue,
+                    category: categoryValue
+                });
+            }
+            description.value = "";
+            amount.value = "";
+            await loadTransactions();
+        } catch (error) {
+            alert(currentLang === "tr" ? "Sunucuya bağlanılamadı!" : "Could not connect to server!");
+        }
+    });
 }
 // Loan Simulator Handler
 if (calcLoanBtn) {
@@ -358,10 +447,15 @@ if (title) title.textContent = isTr ? "💰 Aile Bütçe Asistanı" : "💰 Fami
 if (balanceTitle) balanceTitle.textContent = isTr ? "Toplam Bakiye" : "Total Balance";
 if (totalIncomeLabel) totalIncomeLabel.textContent = isTr ? "Toplam Gelir" : "Total Income";
 if (totalExpenseLabel) totalExpenseLabel.textContent = isTr ? "Toplam Gider" : "Total Expense";
+if (categorySummaryTitle) categorySummaryTitle.textContent = isTr ? "🧾 Harcama Kategorileri" : "🧾 Spending Categories";
 if (description) description.placeholder = isTr ? "Açıklama (Örn: Market, Maaş)" : "Description (e.g. Grocery, Salary)";
 if (amount) amount.placeholder = isTr ? "Tutar (TL)" : "Amount (TL)";
 if (incomeOption) incomeOption.textContent = isTr ? "Gelir (+)" : "Income (+)";
 if (expenseOption) expenseOption.textContent = isTr ? "Gider (-)" : "Expense (-)";
+if (category) {
+    category.setAttribute("aria-label", isTr ? "İşlem kategorisi" : "Transaction category");
+    renderCategoryOptions(category.value);
+}
 if (addButton) addButton.textContent = isTr ? "İşlemi Ekle" : "Add Transaction";
 if (logoutBtn) logoutBtn.textContent = isTr ? "Çıkış" : "Logout";
 if (exportButtonLabel) exportButtonLabel.textContent = isTr ? "İndir" : "Export";

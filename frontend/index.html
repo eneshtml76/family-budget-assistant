@@ -83,6 +83,7 @@
                         <option value="gider" id="expenseOption">Gider (-)</option>
                     </select>
                 </div>
+                <select id="category" aria-label="İşlem kategorisi"></select>
                 
                 <button id="addButton" class="primary-btn" type="button">İşlemi Ekle</button>
             </section>
@@ -110,6 +111,11 @@
             <div class="chart-container">
                 <canvas id="budgetChart"></canvas>
             </div>
+
+            <section class="category-summary">
+                <h3 id="categorySummaryTitle">🧾 Harcama Kategorileri</h3>
+                <div id="categorySummary" class="category-list"></div>
+            </section>
 
             <div class="simulator-box">
                 <h3 id="simTitle">🏦 Kredi & Taksit Simülatörü</h3>

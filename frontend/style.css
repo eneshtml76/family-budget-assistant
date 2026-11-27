@@ -597,6 +597,61 @@ li {
     color: #27382f;
 }
 
+.category-summary {
+    margin: 0 0 20px;
+}
+
+.category-summary h3 {
+    margin-bottom: 10px;
+    color: #27382f;
+    font-size: 15px;
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.category-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e8ede8;
+    border-radius: 11px;
+    background: #f8faf8;
+    color: #47574e;
+    font-size: 13px;
+}
+
+.category-row strong {
+    color: #d25252;
+    white-space: nowrap;
+}
+
+.category-empty {
+    color: #78867e;
+    font-size: 13px;
+}
+
+.transaction-description {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.transaction-name {
+    overflow-wrap: anywhere;
+}
+
+.transaction-category {
+    color: #78867e;
+    font-size: 11px;
+}
+
 .food-item {
     background: #f8faf8;
     border-color: #e8ede8;

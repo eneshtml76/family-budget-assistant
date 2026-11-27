@@ -15,6 +15,7 @@ A modern, responsive, and bilingual (**EN / TR**) full-stack personal finance an
 * **🔐 Secure Authentication & Persistent Sessions:** User registration and login system protected with cryptographic **SHA-256 password hashing** and persistent browser session storage (`localStorage`).
 * **📊 Real-Time Analytics & Charts:** Interactive Income vs. Expense doughnut chart powered by **Chart.js** alongside live balance and summary cards.
 * **📥 Transaction Export:** Download your transactions as a Turkish spreadsheet-friendly CSV from desktop or mobile.
+* **🧾 Spending Categories:** Categorize expenses and review spending totals by category.
 * **🏦 Bank Loan & Installment Simulator:** Calculates exact monthly installments, total payback, and total compound interest cost using standard banking amortization formulas.
 * **🥙 Local Food & Expense Quick-Deduct:** Integrated Seferihisar local dining guide with ratings and menu prices that deducts meal costs directly from the user's database balance in one click.
 * **🛡️ Security First:** Built with DOM XSS protection (`textContent` sanitization), input validation, and user-level data isolation (`UserId` filtering).
