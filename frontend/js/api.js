@@ -1,5 +1,19 @@
-// Live C# Backend API hosted on Railway Cloud
-const BASE_URL = "https://railway.app";
+const isLocalFrontend =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
+const configuredApiUrl = document
+    .querySelector('meta[name="api-base-url"]')
+    ?.content
+    ?.trim();
+
+// Set api-base-url in frontend/index.html to the public Railway/hosting URL.
+// Local development automatically uses the ASP.NET Core API on port 5098.
+const BASE_URL = configuredApiUrl
+    ? configuredApiUrl.replace(/\/$/, "") + "/api"
+    : isLocalFrontend
+        ? "http://localhost:5098/api"
+        : "/api";
 
 // Register a new user account on cloud SQLite
 export async function registerUser(username, password) {

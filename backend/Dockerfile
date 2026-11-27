@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Railway automatically listens on port 8080 by default
-ENV ASPNETCORE_URLS=http://0.0.0
+ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "BudgetApi.dll"]
