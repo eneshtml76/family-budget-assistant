@@ -19,6 +19,8 @@ const {
     guideWantsMeterFill,
     monthlyAnalysisNote,
     monthlyComparison,
+    monthlyCategoryReport,
+    monthlyCategoryReportTitle,
     monthlySavingsRate,
     topExpenseCategory,
     totalExpenseAmount,
@@ -26,6 +28,104 @@ const {
     totalIncomeAmount,
     totalIncomeLabel
 } = dom;
+
+function renderMonthlyCategoryReport(transactions, selectedMonth) {
+    if (!monthlyCategoryReport) return;
+    const [year, month] = selectedMonth.split("-").map(Number);
+    const previousMonth = currentMonthValue(new Date(year, month - 2, 1));
+    const currentTotals = new Map();
+    const previousTotals = new Map();
+
+    transactions.filter((item) => item.type === "gider" && item.createdAt).forEach((item) => {
+        const categoryId = categories[item.category] ? item.category : "other";
+        const transactionMonth = transactionMonthValue(item.createdAt);
+        const target = transactionMonth === selectedMonth
+            ? currentTotals
+            : transactionMonth === previousMonth
+                ? previousTotals
+                : null;
+        if (target) target.set(categoryId, (target.get(categoryId) || 0) + item.amount);
+    });
+
+    const rows = [...new Set([...currentTotals.keys(), ...previousTotals.keys()])]
+        .sort((first, second) => (currentTotals.get(second) || 0) - (currentTotals.get(first) || 0));
+    monthlyCategoryReport.replaceChildren();
+
+    if (rows.length === 0) {
+        const message = document.createElement("p");
+        message.className = "category-empty";
+        message.textContent = state.currentLang === "tr"
+            ? "Bu ay ve önceki ay için tarihli gider bulunmuyor."
+            : "No dated expenses found for this or the previous month.";
+        monthlyCategoryReport.appendChild(message);
+        return;
+    }
+
+    const currentTotal = [...currentTotals.values()].reduce((total, value) => total + value, 0);
+    const table = document.createElement("table");
+    table.className = "report-table";
+    const caption = document.createElement("caption");
+    caption.className = "visually-hidden";
+    caption.textContent = state.currentLang === "tr"
+        ? "Seçili ay ile önceki ayın kategori bazında gider karşılaştırması"
+        : "Spending by category for the selected and previous month";
+    table.appendChild(caption);
+
+    const head = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const headers = state.currentLang === "tr"
+        ? ["Kategori", "Seçilen ay", "Önceki ay", "Değişim"]
+        : ["Category", "Selected month", "Previous month", "Change"];
+    headers.forEach((text) => {
+        const cell = document.createElement("th");
+        cell.scope = "col";
+        cell.textContent = text;
+        headerRow.appendChild(cell);
+    });
+    head.appendChild(headerRow);
+    table.appendChild(head);
+
+    const body = document.createElement("tbody");
+    rows.forEach((categoryId) => {
+        const current = currentTotals.get(categoryId) || 0;
+        const previous = previousTotals.get(categoryId) || 0;
+        const row = document.createElement("tr");
+        const categoryCell = document.createElement("th");
+        categoryCell.scope = "row";
+        categoryCell.textContent = categories[categoryId].icon + " " + categoryLabel(categoryId);
+        const currentCell = document.createElement("td");
+        currentCell.textContent = formatMoney(current);
+        const previousCell = document.createElement("td");
+        previousCell.textContent = formatMoney(previous);
+        const changeCell = document.createElement("td");
+        changeCell.textContent = previous > 0
+            ? (current - previous > 0 ? "+" : "") +
+                (((current - previous) / previous) * 100).toLocaleString(
+                    state.currentLang === "tr" ? "tr-TR" : "en-US",
+                    { maximumFractionDigits: 1 }
+                ) + "%"
+            : (state.currentLang === "tr" ? "Yeni" : "New");
+        row.append(categoryCell, currentCell, previousCell, changeCell);
+        body.appendChild(row);
+    });
+    table.appendChild(body);
+
+    const foot = document.createElement("tfoot");
+    const totalRow = document.createElement("tr");
+    const totalLabel = document.createElement("th");
+    totalLabel.scope = "row";
+    totalLabel.textContent = state.currentLang === "tr" ? "Toplam gider" : "Total expenses";
+    const currentCell = document.createElement("td");
+    currentCell.textContent = formatMoney(currentTotal);
+    const previousCell = document.createElement("td");
+    previousCell.textContent = formatMoney([...previousTotals.values()].reduce((total, value) => total + value, 0));
+    const emptyCell = document.createElement("td");
+    emptyCell.textContent = "—";
+    totalRow.append(totalLabel, currentCell, previousCell, emptyCell);
+    foot.appendChild(totalRow);
+    table.appendChild(foot);
+    monthlyCategoryReport.appendChild(table);
+}
 
 export function renderCategorySummary(transactions) {
     if (!categorySummary) return;
@@ -122,6 +222,12 @@ export function renderMonthlyAnalysis(transactions) {
     monthlyAnalysisNote.textContent = state.currentLang === "tr"
         ? "Tarih bilgisi olmayan eski işlemler aylık analize dahil edilmez."
         : "Older transactions without dates are excluded from monthly analysis.";
+    if (monthlyCategoryReportTitle) {
+        monthlyCategoryReportTitle.textContent = state.currentLang === "tr"
+            ? "📈 Aylık kategori raporu"
+            : "📈 Monthly category report";
+    }
+    renderMonthlyCategoryReport(transactions, analysisMonth.value);
     updateChart(income, expenses, state.currentLang === "tr");
 }
 

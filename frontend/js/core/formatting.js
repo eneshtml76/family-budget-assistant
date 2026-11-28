@@ -14,6 +14,10 @@ export function localDateValue(date) {
 }
 
 export function transactionDateValue(createdAt) {
+    if (typeof createdAt === "string") {
+        const dateOnly = createdAt.match(/^(\d{4}-\d{2}-\d{2})(?:T|$)/);
+        if (dateOnly) return dateOnly[1];
+    }
     return localDateValue(new Date(createdAt));
 }
 

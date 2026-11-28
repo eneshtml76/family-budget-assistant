@@ -5,7 +5,7 @@ import {
     updateTransaction
 } from "../services/api.js";
 import { categories, categoryLabel } from "../core/categories.js";
-import { formatMoney, currentMonthValue, transactionDateValue } from "../core/formatting.js";
+import { formatMoney, currentMonthValue, localDateValue, transactionDateValue } from "../core/formatting.js";
 import { state } from "../core/state.js";
 import { dom } from "../core/dom.js";
 import {
@@ -23,6 +23,7 @@ const {
     clearFiltersButton,
     description,
     exportButton,
+    transactionDate,
     totalBalance,
     transactionCategoryFilter,
     transactionDateFrom,
@@ -99,13 +100,17 @@ export function renderFilteredTransactions() {
 }
 
 export async function loadTransactions() {
-    if (!state.currentUser) return;
+    if (!state.currentUser) {
+        state.transactionsLoaded = false;
+        return false;
+    }
     try {
         const transactions = state.currentUser.isGuest
             ? state.guestTransactions
             : await fetchTransactions(state.currentUser.userId);
 
         state.currentTransactions = transactions;
+        state.transactionsLoaded = true;
         state.balance = 0;
         let totalIncome = 0;
 
@@ -123,12 +128,15 @@ export async function loadTransactions() {
         renderFilteredTransactions();
         renderCategorySummary(transactions);
         renderBudgetPlan(transactions, totalIncome, state.balance);
+        return true;
     } catch (error) {
+        state.transactionsLoaded = false;
         console.error("Error loading transactions:", error);
         transactionEmptyMessage.classList.remove("hidden");
         transactionEmptyMessage.textContent = state.currentLang === "tr"
             ? "İşlemler yüklenemedi: " + error.message
             : "Could not load transactions: " + error.message;
+        return false;
     }
 }
 
@@ -167,6 +175,7 @@ export function resetTransactionForm() {
     state.editingTransactionId = null;
     description.value = "";
     amount.value = "";
+    transactionDate.value = localDateValue(new Date());
     renderCategoryOptions();
     addButton.textContent = state.currentLang === "tr" ? "İşlemi Ekle" : "Add Transaction";
     cancelEditButton.classList.add("hidden");
@@ -176,6 +185,7 @@ function startEditingTransaction(item) {
     state.editingTransactionId = item.id;
     description.value = item.description;
     amount.value = item.amount;
+    transactionDate.value = item.createdAt ? transactionDateValue(item.createdAt) : "";
     type.value = item.type;
     renderCategoryOptions(item.category);
     addButton.textContent = state.currentLang === "tr" ? "Değişikliği Kaydet" : "Save Changes";
@@ -197,9 +207,13 @@ function renderTransactionItem(item) {
     categorySpan.textContent = categoryLabel(item.category);
     const dateSpan = document.createElement("span");
     dateSpan.className = "transaction-date";
-    dateSpan.textContent = item.createdAt
-        ? new Date(item.createdAt).toLocaleDateString(state.currentLang === "tr" ? "tr-TR" : "en-US")
-        : (state.currentLang === "tr" ? "Tarih bilgisi yok" : "Date unavailable");
+    if (item.createdAt) {
+        const [year, month, day] = transactionDateValue(item.createdAt).split("-").map(Number);
+        dateSpan.textContent = new Date(year, month - 1, day)
+            .toLocaleDateString(state.currentLang === "tr" ? "tr-TR" : "en-US");
+    } else {
+        dateSpan.textContent = state.currentLang === "tr" ? "Tarih bilgisi yok" : "Date unavailable";
+    }
     descriptionGroup.append(descSpan, categorySpan, dateSpan);
 
     const rightDiv = document.createElement("div");
@@ -259,6 +273,7 @@ export function initializeTransactions() {
     }
     analysisMonth.value = currentMonthValue();
     analysisMonth.addEventListener("change", () => renderMonthlyAnalysis(state.currentTransactions));
+    transactionDate.value = localDateValue(new Date());
     type.addEventListener("change", () => renderCategoryOptions());
     renderCategoryOptions();
 
@@ -271,8 +286,10 @@ export function initializeTransactions() {
             const typeValue = type.value;
             const categoryValue = category.value;
 
-            if (descValue === "" || !Number.isFinite(amnt) || amnt <= 0) {
-                alert(state.currentLang === "tr" ? "Geçerli bilgi girin!" : "Enter valid info!");
+            if (descValue === "" || !Number.isFinite(amnt) || amnt <= 0 || !transactionDate.value) {
+                alert(state.currentLang === "tr"
+                    ? "Açıklama, geçerli tutar ve işlem tarihi girin."
+                    : "Enter a description, valid amount, and transaction date.");
                 return;
             }
 
@@ -282,7 +299,8 @@ export function initializeTransactions() {
                     description: descValue,
                     amount: amnt,
                     type: typeValue,
-                    category: categoryValue
+                    category: categoryValue,
+                    createdAt: new Date(transactionDate.value + "T00:00:00.000Z").toISOString()
                 };
                 if (state.editingTransactionId !== null) {
                     if (state.currentUser.isGuest) {
@@ -297,8 +315,7 @@ export function initializeTransactions() {
                 } else if (state.currentUser.isGuest) {
                     state.guestTransactions.push({
                         ...transactionData,
-                        id: Date.now(),
-                        createdAt: new Date().toISOString()
+                        id: Date.now()
                     });
                 } else {
                     await createTransaction(transactionData);

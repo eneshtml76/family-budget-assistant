@@ -21,9 +21,55 @@ function checkSession() {
     }
 }
 
+function showAuthMessage(message, isError = false) {
+    dom.authMessage.textContent = message;
+    dom.authMessage.classList.toggle("is-error", isError);
+}
+
+function setAuthBusy(isBusy) {
+    dom.loginBtn.disabled = isBusy;
+    dom.registerBtn.disabled = isBusy;
+    dom.loginBtn.setAttribute("aria-busy", String(isBusy));
+    dom.registerBtn.setAttribute("aria-busy", String(isBusy));
+}
+
+function clearPasswordInput() {
+    dom.passwordInput.value = "";
+    dom.passwordInput.type = "password";
+    dom.passwordVisibilityButton.setAttribute("aria-pressed", "false");
+    dom.passwordVisibilityButton.textContent = state.currentLang === "tr" ? "Göster" : "Show";
+    dom.passwordVisibilityButton.setAttribute(
+        "aria-label",
+        state.currentLang === "tr" ? "Şifreyi göster" : "Show password"
+    );
+}
+
 export function initializeAuthentication() {
+    [dom.usernameInput, dom.passwordInput].forEach((input) => {
+        input.addEventListener("input", () => showAuthMessage(""));
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") dom.loginBtn.click();
+        });
+    });
+
+    dom.passwordVisibilityButton.addEventListener("click", () => {
+        const shouldShow = dom.passwordInput.type === "password";
+        dom.passwordInput.type = shouldShow ? "text" : "password";
+        dom.passwordVisibilityButton.setAttribute("aria-pressed", String(shouldShow));
+        dom.passwordVisibilityButton.setAttribute(
+            "aria-label",
+            state.currentLang === "tr"
+                ? (shouldShow ? "Şifreyi gizle" : "Şifreyi göster")
+                : (shouldShow ? "Hide password" : "Show password")
+        );
+        dom.passwordVisibilityButton.textContent = state.currentLang === "tr"
+            ? (shouldShow ? "Gizle" : "Göster")
+            : (shouldShow ? "Hide" : "Show");
+    });
+
     if (dom.guestBtn) {
         dom.guestBtn.addEventListener("click", () => {
+            showAuthMessage("");
             state.currentUser = { userId: 0, username: "Misafir", isGuest: true };
             state.guestTransactions = [];
             state.guestSavingsGoals = [];
@@ -36,17 +82,29 @@ export function initializeAuthentication() {
             const user = dom.usernameInput.value.trim();
             const pass = dom.passwordInput.value.trim();
             if (!user || !pass) {
-                alert(state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
+                showAuthMessage(
+                    state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin." : "Enter your username and password.",
+                    true
+                );
+                (!user ? dom.usernameInput : dom.passwordInput).focus();
                 return;
             }
 
+            showAuthMessage("");
+            setAuthBusy(true);
             try {
                 const data = await registerUser(user, pass);
                 localStorage.setItem("budgetUser", JSON.stringify(data));
                 state.currentUser = data;
+                clearPasswordInput();
                 checkSession();
             } catch (error) {
-                alert((state.currentLang === "tr" ? "Kayıt hatası: " : "Registration error: ") + error.message);
+                showAuthMessage(
+                    (state.currentLang === "tr" ? "Hesap oluşturulamadı: " : "Could not create account: ") + error.message,
+                    true
+                );
+            } finally {
+                setAuthBusy(false);
             }
         });
     }
@@ -56,17 +114,29 @@ export function initializeAuthentication() {
             const user = dom.usernameInput.value.trim();
             const pass = dom.passwordInput.value.trim();
             if (!user || !pass) {
-                alert(state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin!" : "Enter username and password!");
+                showAuthMessage(
+                    state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin." : "Enter your username and password.",
+                    true
+                );
+                (!user ? dom.usernameInput : dom.passwordInput).focus();
                 return;
             }
 
+            showAuthMessage("");
+            setAuthBusy(true);
             try {
                 const data = await loginUser(user, pass);
                 localStorage.setItem("budgetUser", JSON.stringify(data));
                 state.currentUser = data;
+                clearPasswordInput();
                 checkSession();
             } catch (error) {
-                alert(state.currentLang === "tr" ? "Giriş başarısız! Kullanıcı adı veya şifre hatalı." : "Login failed! Invalid username or password.");
+                showAuthMessage(
+                    (state.currentLang === "tr" ? "Giriş yapılamadı: " : "Could not sign in: ") + error.message,
+                    true
+                );
+            } finally {
+                setAuthBusy(false);
             }
         });
     }
@@ -79,6 +149,13 @@ export function initializeAuthentication() {
             state.guestSavingsGoals = [];
             state.currentTransactions = [];
             state.currentSavingsGoals = [];
+            state.transactionsLoaded = false;
+            state.savingsGoalsLoaded = false;
+            dom.backupFileInput.value = "";
+            dom.restorePasswordInput.value = "";
+            dom.restorePanel.classList.add("hidden");
+            dom.backupMessage.textContent = "";
+            dom.backupMessage.classList.remove("is-error");
             resetTransactionForm();
             dom.transactionList.replaceChildren();
             dom.transactionEmptyMessage.classList.add("hidden");
@@ -87,7 +164,8 @@ export function initializeAuthentication() {
             dom.goalNameInput.value = "";
             dom.goalTargetInput.value = "";
             dom.usernameInput.value = "";
-            dom.passwordInput.value = "";
+            clearPasswordInput();
+            showAuthMessage("");
             checkSession();
         });
     }

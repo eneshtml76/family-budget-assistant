@@ -1,4 +1,4 @@
-const CACHE_NAME = "family-budget-v1.1-shell-2";
+const CACHE_NAME = "family-budget-v1.3-shell-1";
 const APP_SHELL = [
     "./",
     "./index.html",
@@ -15,6 +15,7 @@ const APP_SHELL = [
     "./js/core/formatting.js",
     "./js/features/analytics.js",
     "./js/features/authentication.js",
+    "./js/features/backup.js",
     "./js/features/chart.js",
     "./js/features/family-guide.js",
     "./js/features/loan-simulator.js",

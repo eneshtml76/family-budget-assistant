@@ -59,7 +59,7 @@ export async function createTransaction(transactionData) {
     return await response.json();
 }
 
-// Update a transaction while keeping its original creation date.
+// Update a transaction, including its selected transaction date.
 export async function updateTransaction(id, transactionData) {
     const response = await fetch(`${BASE_URL}/transactions/${id}`, {
         method: "PUT",
@@ -109,4 +109,17 @@ export async function removeSavingsGoal(id, userId) {
         method: "DELETE"
     });
     if (!response.ok) throw new Error("Failed to delete savings goal");
+}
+
+export async function restoreBackup(userId, username, password, backup) {
+    const response = await fetch(`${BASE_URL}/backups/${userId}/restore`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...backup, username, password })
+    });
+    if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Failed to restore backup");
+    }
+    return await response.json();
 }

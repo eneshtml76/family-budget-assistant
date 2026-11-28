@@ -114,17 +114,24 @@ export function renderSavingsGoals(goals) {
 }
 
 export async function loadSavingsGoals() {
-    if (!state.currentUser) return;
+    if (!state.currentUser) {
+        state.savingsGoalsLoaded = false;
+        return false;
+    }
     try {
         state.currentSavingsGoals = state.currentUser.isGuest
             ? state.guestSavingsGoals
             : await fetchSavingsGoals(state.currentUser.userId);
+        state.savingsGoalsLoaded = true;
         renderSavingsGoals(state.currentSavingsGoals);
+        return true;
     } catch (error) {
+        state.savingsGoalsLoaded = false;
         console.error("Error loading savings goals:", error);
         savingsGoalsList.textContent = state.currentLang === "tr"
             ? "Birikim hedefleri yüklenemedi: " + error.message
             : "Could not load savings goals: " + error.message;
+        return false;
     }
 }
 

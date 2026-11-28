@@ -39,9 +39,13 @@
         </header>
         <p id="authSubtitle" class="subtitle">Verilerinin kalıcı olması için giriş yap veya yeni hesap oluştur.</p>
 
+        <p id="authMessage" class="auth-message" role="alert" aria-live="assertive"></p>
         <div class="form-group">
-            <input type="text" id="usernameInput" placeholder="Kullanıcı Adı" autocomplete="off">
-            <input type="password" id="passwordInput" placeholder="Şifre">
+            <input type="text" id="usernameInput" placeholder="Kullanıcı Adı" autocomplete="username" aria-label="Kullanıcı adı" maxlength="60">
+            <div class="password-input-row">
+                <input type="password" id="passwordInput" placeholder="Şifre" autocomplete="current-password" aria-label="Şifre">
+                <button id="passwordVisibilityButton" class="password-visibility-btn" type="button" aria-label="Şifreyi göster" aria-pressed="false">Göster</button>
+            </div>
             <button id="loginBtn" class="primary-btn" type="button">Giriş Yap</button>
             <button id="registerBtn" class="secondary-btn" type="button">Kalıcı Hesap Oluştur</button>
             <button id="guestBtn" class="guest-btn" type="button">⚡ Hızlıca Gir (Kaydetmez)</button>
@@ -161,6 +165,7 @@
                     </select>
                 </div>
                 <select id="category" aria-label="İşlem kategorisi"></select>
+                <input id="transactionDate" type="date" aria-label="İşlem tarihi" required>
                 
                 <button id="addButton" class="primary-btn" type="button">İşlemi Ekle</button>
                 <button id="cancelEditButton" class="secondary-btn hidden" type="button">Düzenlemeyi iptal et</button>
@@ -235,6 +240,30 @@
                 <div id="categorySummary" class="category-list"></div>
             </section>
 
+            <section class="monthly-category-report" aria-labelledby="monthlyCategoryReportTitle">
+                <h3 id="monthlyCategoryReportTitle">📈 Aylık kategori raporu</h3>
+                <div id="monthlyCategoryReport" class="report-table-container" aria-live="polite"></div>
+            </section>
+
+            <section class="data-tools" aria-labelledby="dataToolsTitle">
+                <h3 id="dataToolsTitle">🔐 Veri yedekleme</h3>
+                <p id="dataToolsNote">İşlem ve birikim hedeflerini yedekle veya geri yükle. Yedek finansal verilerini içerir; güvenli sakla.</p>
+                <div class="data-tools-actions">
+                    <button id="backupButton" class="secondary-btn" type="button">Yedeği indir</button>
+                    <button id="restoreButton" class="small-action-btn" type="button">Yedekten geri yükle</button>
+                    <input id="backupFileInput" class="hidden" type="file" accept="application/json,.json" aria-label="Yedek dosyası seç">
+                </div>
+                <div id="restorePanel" class="restore-panel hidden">
+                    <label id="restorePasswordLabel" for="restorePasswordInput">Hesap şifresi</label>
+                    <input id="restorePasswordInput" type="password" autocomplete="current-password" aria-label="Hesap şifresi">
+                    <div class="data-tools-actions">
+                        <button id="confirmRestoreButton" class="primary-btn" type="button">Geri yüklemeyi onayla</button>
+                        <button id="cancelRestoreButton" class="filter-clear-btn" type="button">İptal</button>
+                    </div>
+                </div>
+                <p id="backupMessage" class="backup-message" role="status" aria-live="polite"></p>
+            </section>
+
             <div class="simulator-box">
                 <h3 id="simTitle">🏦 Kredi & Taksit Simülatörü</h3>
                 <div class="form-group">
@@ -259,7 +288,7 @@
         </button>
         <button id="versionButton" class="version-button" type="button" aria-haspopup="dialog">
             <span class="version-dot" aria-hidden="true"></span>
-            <span id="versionButtonText">Sürüm 1.1</span>
+            <span id="versionButtonText">Sürüm 1.3</span>
         </button>
     </nav>
 
@@ -278,6 +307,38 @@
                 <div class="release-heading">
                     <div>
                         <span class="release-status" id="releaseStatus">GÜNCEL</span>
+                        <h3 id="releaseTitleV13">v1.3 · Raporlar ve yedekleme</h3>
+                    </div>
+                    <time id="releaseDateV13" datetime="2026-11-28">28 Kasım 2026</time>
+                </div>
+                <p id="releaseSummaryV13">Aylık kategori raporlarını inceleyin; hesap verilerinizi dışa aktarın veya yedekten geri yükleyin.</p>
+                <ul class="release-changes">
+                    <li id="releaseItemV13a">Aylık kategori harcamalarını önceki ayla karşılaştırma</li>
+                    <li id="releaseItemV13b">İşlem ve birikim hedefleri için JSON yedekleme</li>
+                    <li id="releaseItemV13c">Yedekten güvenli, onaylı geri yükleme</li>
+                </ul>
+            </article>
+
+            <article class="release-card previous-release">
+                <div class="release-heading">
+                    <div>
+                        <span class="release-status previous-status" id="releaseStatusV12">ÖNCEKİ SÜRÜM</span>
+                        <h3 id="releaseTitleV12">v1.2 · Daha kolay günlük kullanım</h3>
+                    </div>
+                    <time id="releaseDateV12" datetime="2026-11-28">28 Kasım 2026</time>
+                </div>
+                <p id="releaseSummaryV12">Tarihli işlem girişi, daha anlaşılır hesap geri bildirimi ve erişilebilir form kontrolleri.</p>
+                <ul class="release-changes">
+                    <li id="releaseItemV12a">İşlem eklerken ve düzenlerken tarihi seçme</li>
+                    <li id="releaseItemV12b">Şifreyi gösterme ve giriş/kayıt için anlaşılır geri bildirim</li>
+                    <li id="releaseItemV12c">Klavye odağı ve mobil form iyileştirmeleri</li>
+                </ul>
+            </article>
+
+            <article class="release-card previous-release">
+                <div class="release-heading">
+                    <div>
+                        <span class="release-status previous-status" id="releaseStatusV11">ÖNCEKİ SÜRÜM</span>
                         <h3 id="releaseTitleV11">v1.1 · Kurulabilir uygulama</h3>
                     </div>
                     <time id="releaseDateV11" datetime="2026-11-27">27 Kasım 2026</time>
@@ -304,8 +365,8 @@
             <section class="roadmap-card">
                 <span id="roadmapLabel">ÜRÜN YOL HARİTASI</span>
                 <ul>
-                    <li><strong>v1.2</strong><span id="roadmapV12">Günlük kullanım iyileştirmeleri ve erişilebilirlik</span></li>
-                    <li><strong>v1.3</strong><span id="roadmapV13">Daha kapsamlı raporlar ve veri yedekleme</span></li>
+                    <li><strong>v1.2</strong><span id="roadmapV12">Yayınlandı: Günlük kullanım ve erişilebilirlik</span></li>
+                    <li><strong>v1.3</strong><span id="roadmapV13">Yayınlandı: Raporlar ve veri yedekleme</span></li>
                     <li><strong>v2.0</strong><span id="roadmapV20">Uzun vadeli hedef: kapsamlı, güvenilir ana sürüm</span></li>
                 </ul>
                 <p id="roadmapDisclaimer">Planlanan özellikler kullanıcı geri bildirimine göre değişebilir. v2.0 son büyük sürüm hedefidir; gerekli bakım ve güvenlik güncellemeleri sonrasında da devam edebilir.</p>

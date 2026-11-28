@@ -8,6 +8,9 @@ import { applyTheme } from "./theme.js";
 const {
     usernameInput,
     passwordInput,
+    passwordVisibilityButton,
+    authMessage,
+    transactionDate,
     loginBtn,
     registerBtn,
     guestBtn,
@@ -53,6 +56,16 @@ const {
     expenseOption,
     analyticsTitle,
     categorySummaryTitle,
+    monthlyCategoryReportTitle,
+    dataToolsTitle,
+    dataToolsNote,
+    backupButton,
+    restoreButton,
+    restorePasswordLabel,
+    restorePasswordInput,
+    confirmRestoreButton,
+    cancelRestoreButton,
+    backupMessage,
     simTitle,
     guideKicker,
     guideTitle,
@@ -82,6 +95,18 @@ export function toggleLanguage() {
     : "Sign in or create a permanent account to save your data.";
     if (usernameInput) usernameInput.placeholder = isTr ? "Kullanıcı Adı" : "Username";
     if (passwordInput) passwordInput.placeholder = isTr ? "Şifre" : "Password";
+    if (usernameInput) usernameInput.setAttribute("aria-label", isTr ? "Kullanıcı adı" : "Username");
+    if (passwordInput) passwordInput.setAttribute("aria-label", isTr ? "Şifre" : "Password");
+    if (passwordVisibilityButton) {
+        passwordVisibilityButton.textContent = isTr ? "Göster" : "Show";
+        passwordVisibilityButton.setAttribute("aria-label", isTr ? "Şifreyi göster" : "Show password");
+        passwordVisibilityButton.setAttribute("aria-pressed", "false");
+        if (passwordInput) passwordInput.type = "password";
+    }
+    if (authMessage) {
+        authMessage.textContent = "";
+        authMessage.classList.remove("is-error");
+    }
     if (loginBtn) loginBtn.textContent = isTr ? "Giriş Yap" : "Sign In";
     if (registerBtn) registerBtn.textContent = isTr ? "Kalıcı Hesap Oluştur" : "Create Permanent Account";
     if (guestBtn) guestBtn.textContent = isTr ? "⚡ Hızlıca Gir (Kaydetmez)" : "⚡ Quick Enter (Not Saved)";
@@ -114,6 +139,7 @@ export function toggleLanguage() {
     if (categorySummaryTitle) categorySummaryTitle.textContent = isTr ? "🧾 Harcama Kategorileri" : "🧾 Spending Categories";
     if (description) description.placeholder = isTr ? "Açıklama (Örn: Market, Maaş)" : "Description (e.g. Grocery, Salary)";
     if (amount) amount.placeholder = isTr ? "Tutar (TL)" : "Amount (TL)";
+    if (transactionDate) transactionDate.setAttribute("aria-label", isTr ? "İşlem tarihi" : "Transaction date");
     if (incomeOption) incomeOption.textContent = isTr ? "Gelir (+)" : "Income (+)";
     if (expenseOption) expenseOption.textContent = isTr ? "Gider (-)" : "Expense (-)";
     if (category) {
@@ -130,6 +156,23 @@ export function toggleLanguage() {
     if (exportButtonLabel) exportButtonLabel.textContent = isTr ? "İndir" : "Export";
     if (exportButton) exportButton.setAttribute("aria-label", isTr ? "İşlemleri indir" : "Download transactions");
     if (analyticsTitle) analyticsTitle.textContent = isTr ? "📊 Bütçe Analizi & Kredi" : "📊 Budget Analytics & Loan";
+    if (monthlyCategoryReportTitle) monthlyCategoryReportTitle.textContent = isTr
+        ? "📈 Aylık kategori raporu"
+        : "📈 Monthly category report";
+    if (dataToolsTitle) dataToolsTitle.textContent = isTr ? "🔐 Veri yedekleme" : "🔐 Data backup";
+    if (dataToolsNote) dataToolsNote.textContent = isTr
+        ? "İşlemlerini ve birikim hedeflerini JSON yedeği olarak dışa aktar veya geri yükle. Yedek finansal verilerini içerir; güvenli sakla."
+        : "Export or restore your transactions and savings goals as a JSON backup. It contains financial data; store it securely.";
+    if (backupButton) backupButton.textContent = isTr ? "Yedeği indir" : "Download backup";
+    if (restoreButton) restoreButton.textContent = isTr ? "Yedekten geri yükle" : "Restore backup";
+    if (restorePasswordLabel) restorePasswordLabel.textContent = isTr ? "Hesap şifresi" : "Account password";
+    if (restorePasswordInput) restorePasswordInput.setAttribute("aria-label", isTr ? "Hesap şifresi" : "Account password");
+    if (confirmRestoreButton) confirmRestoreButton.textContent = isTr ? "Geri yüklemeyi onayla" : "Confirm restore";
+    if (cancelRestoreButton) cancelRestoreButton.textContent = isTr ? "İptal" : "Cancel";
+    if (backupMessage) {
+        backupMessage.textContent = "";
+        backupMessage.classList.remove("is-error");
+    }
     document.getElementById("monthlyAnalysisTitle").textContent = isTr ? "📅 Aylık finansal analiz" : "📅 Monthly financial analysis";
     document.getElementById("monthlyComparisonLabel").textContent = isTr ? "Önceki aya göre" : "Compared with previous month";
     document.getElementById("topExpenseCategoryLabel").textContent = isTr ? "En çok harcanan kategori" : "Top spending category";
@@ -156,10 +199,44 @@ export function toggleLanguage() {
     if (loanMonthsInput) loanMonthsInput.placeholder = isTr ? "Vade (Ay - Örn: 24)" : "Term (Months - e.g. 24)";
     if (interestRateInput) interestRateInput.placeholder = isTr ? "Aylık Faiz (%)" : "Monthly Interest (%)";
     if (calcLoanBtn) calcLoanBtn.textContent = isTr ? "Krediyi Hesapla" : "Calculate Loan";
-    if (versionButtonText) versionButtonText.textContent = isTr ? "Sürüm 1.1" : "Version 1.1";
+    if (versionButtonText) versionButtonText.textContent = isTr ? "Sürüm 1.3" : "Version 1.3";
     document.getElementById("versionEyebrow").textContent = isTr ? "GÜNCELLEME GÜNLÜĞÜ" : "UPDATE LOG";
     document.getElementById("versionModalTitle").textContent = isTr ? "Sürüm geçmişi" : "Version history";
     document.getElementById("releaseStatus").textContent = isTr ? "GÜNCEL" : "CURRENT";
+    document.getElementById("releaseTitleV13").textContent = isTr
+        ? "v1.3 · Raporlar ve yedekleme"
+        : "v1.3 · Reports and backups";
+    document.getElementById("releaseDateV13").textContent = isTr ? "28 Kasım 2026" : "November 28, 2026";
+    document.getElementById("releaseSummaryV13").textContent = isTr
+        ? "Aylık kategori raporlarını inceleyin; hesap verilerinizi dışa aktarın veya yedekten geri yükleyin."
+        : "Review monthly category reports and export or restore your account data.";
+    document.getElementById("releaseItemV13a").textContent = isTr
+        ? "Aylık kategori harcamalarını önceki ayla karşılaştırma"
+        : "Compare monthly category spending with the previous month";
+    document.getElementById("releaseItemV13b").textContent = isTr
+        ? "İşlem ve birikim hedefleri için JSON yedekleme"
+        : "JSON backups for transactions and savings goals";
+    document.getElementById("releaseItemV13c").textContent = isTr
+        ? "Yedekten güvenli, onaylı geri yükleme"
+        : "Safe, confirmed backup restoration";
+    document.getElementById("releaseStatusV12").textContent = isTr ? "ÖNCEKİ SÜRÜM" : "PREVIOUS RELEASE";
+    document.getElementById("releaseTitleV12").textContent = isTr
+        ? "v1.2 · Daha kolay günlük kullanım"
+        : "v1.2 · Easier everyday use";
+    document.getElementById("releaseDateV12").textContent = isTr ? "28 Kasım 2026" : "November 28, 2026";
+    document.getElementById("releaseSummaryV12").textContent = isTr
+        ? "Tarihli işlem girişi, daha anlaşılır hesap geri bildirimi ve erişilebilir form kontrolleri."
+        : "Dated transactions, clearer account feedback, and more accessible form controls.";
+    document.getElementById("releaseItemV12a").textContent = isTr
+        ? "İşlem eklerken ve düzenlerken tarihi seçme"
+        : "Choose the date when adding or editing a transaction";
+    document.getElementById("releaseItemV12b").textContent = isTr
+        ? "Şifreyi gösterme ve giriş/kayıt için anlaşılır geri bildirim"
+        : "Password visibility and clear sign-in/registration feedback";
+    document.getElementById("releaseItemV12c").textContent = isTr
+        ? "Klavye odağı ve mobil form iyileştirmeleri"
+        : "Keyboard focus and mobile form improvements";
+    document.getElementById("releaseStatusV11").textContent = isTr ? "ÖNCEKİ SÜRÜM" : "PREVIOUS RELEASE";
     document.getElementById("releaseTitleV11").textContent = isTr
         ? "v1.1 · Kurulabilir web uygulaması"
         : "v1.1 · Installable web app";
@@ -186,11 +263,11 @@ export function toggleLanguage() {
         : "Monthly analytics, transaction management, savings goals, and dark mode.";
     document.getElementById("roadmapLabel").textContent = isTr ? "ÜRÜN YOL HARİTASI" : "PRODUCT ROADMAP";
     document.getElementById("roadmapV12").textContent = isTr
-        ? "Günlük kullanım iyileştirmeleri ve erişilebilirlik"
-        : "Everyday usability and accessibility improvements";
+        ? "Yayınlandı: Günlük kullanım ve erişilebilirlik"
+        : "Released: Everyday usability and accessibility";
     document.getElementById("roadmapV13").textContent = isTr
-        ? "Daha kapsamlı raporlar ve veri yedekleme"
-        : "Richer reports and data backup";
+        ? "Yayınlandı: Raporlar ve veri yedekleme"
+        : "Released: Reports and data backup";
     document.getElementById("roadmapV20").textContent = isTr
         ? "Kapsamlı, güvenilir ana sürüm hedefi"
         : "Target for a complete, dependable major release";

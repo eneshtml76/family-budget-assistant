@@ -1,7 +1,6 @@
-using System.Security.Cryptography;
-using System.Text;
 using BudgetApi.Data;
 using BudgetApi.Models;
+using BudgetApi.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +38,7 @@ public class AuthController : ControllerBase
         var newUser = new User
         {
             Username = request.Username.Trim(),
-            PasswordHash = HashPassword(request.Password)
+            PasswordHash = PasswordHasher.Hash(request.Password)
         };
 
         _context.Users.Add(newUser);
@@ -52,20 +51,12 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(AuthRequest request)
     {
-        var hashed = HashPassword(request.Password);
         var user = await _context.Users.FirstOrDefaultAsync(u =>
-            u.Username == request.Username.Trim() && u.PasswordHash == hashed);
+            u.Username == request.Username.Trim());
 
-        if (user == null)
+        if (user == null || !PasswordHasher.Verify(request.Password, user.PasswordHash))
             return Unauthorized("Invalid username or password.");
 
         return Ok(new { userId = user.Id, username = user.Username });
-    }
-
-    // Cryptographic SHA-256 password hashing helper
-    private static string HashPassword(string password)
-    {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(bytes);
     }
 }

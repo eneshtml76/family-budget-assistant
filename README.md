@@ -1,7 +1,7 @@
 # Family Budget Assistant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/eneshtml76/family-budget-assistant/tree/v1.1)
+[![Release](https://img.shields.io/badge/release-v1.3-blue.svg)](https://github.com/eneshtml76/family-budget-assistant/tree/v1.3)
 [![Frontend](https://img.shields.io/badge/frontend-GitHub%20Pages-222222.svg)](https://eneshtml76.github.io/family-budget-assistant/)
 
 
@@ -13,14 +13,26 @@ A responsive, bilingual family budgeting application for tracking income, expens
 
 **Live application:** [eneshtml76.github.io/family-budget-assistant](https://eneshtml76.github.io/family-budget-assistant/)
 
-> **Current release: v1.1.** Install the app from a supported browser; a separate App Store or Google Play download is not currently provided. Offline support caches the application shell only. Account, transaction, and savings-goal features require an internet connection.
+> **Current release: v1.3.** Install the app from a supported browser; a separate App Store or Google Play download is not currently provided. Offline support caches the application shell only. Account, transaction, and savings-goal features require an internet connection.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/Screenshots/01-sign-in-and-guest-access.png" alt="Sign-in screen with guest access" width="48%">
+  <img src="docs/Screenshots/02-dashboard-overview.png" alt="Budget dashboard with monthly analytics and savings goals" width="48%">
+</p>
+
+The dashboard screenshot uses illustrative guest-mode data; no real user data is shown.
 
 ## Features
 
 - **Monthly financial overview:** See income, expenses, savings rate, top spending category, and comparison with the previous month.
 - **Transaction management:** Add, edit, search, filter, and export transactions as CSV.
+- **Transaction dates:** Choose or edit transaction dates for accurate date filtering and monthly analysis.
 - **Spending categories:** Organize income and expenses with category totals.
+- **Monthly category reports:** Compare category spending in the selected month with the previous month.
 - **Savings goals:** Set a target, add contributions, and track progress and remaining amounts.
+- **JSON backup and restore:** Download transaction and savings-goal backups, then restore them to guest mode or a registered account. Restoring replaces the current data; account restores require the account password. Backup files contain financial data and should be stored securely.
 - **50/30/20 budget guide:** Compare recorded spending with suggested needs, wants, and savings allocations.
 - **Loan simulator:** Estimate monthly payments, total repayment, and interest.
 - **Installable PWA:** Install from supported Android and desktop browsers, or add the site to the iOS/iPadOS Home Screen.
@@ -38,7 +50,25 @@ The site must be opened over HTTPS to install or use its service worker. GitHub 
 
 The install action may not be offered by every browser. Use the instructions above if the in-page install prompt is unavailable. The app shell can open after it has been cached, but signing in and synchronizing financial data still require a network connection.
 
+## Back up and restore data
+
+Open the dashboard and select **Download backup** to save transactions and savings goals as a JSON file. To restore, select **Restore backup**, choose a JSON backup, review the replacement warning, then confirm. Registered accounts must provide their account password; restoration replaces the account's existing transactions and savings goals in one database transaction. Guest-mode data can also be restored, but remains temporary and is lost when the guest session ends.
+
+Backup files contain financial data and are not encrypted. Store them somewhere private and secure.
+
 ## Releases and roadmap
+
+### v1.3 — Reports and data backup
+
+- Added monthly category reports comparing selected-month spending with the previous month.
+- Added JSON backups for transactions and savings goals, with validated and confirmed restoration.
+- Added an atomic account restore endpoint that verifies the account password before replacing records.
+
+### v1.2 — Easier everyday use
+
+- Added selectable transaction dates when creating and editing transactions.
+- Added inline sign-in and registration feedback, password visibility controls, and Enter-key submission.
+- Improved keyboard focus visibility and form accessibility on mobile and desktop.
 
 ### v1.1 — Installable web app
 
@@ -57,8 +87,6 @@ Roadmap items are targets, not release commitments; scope may change based on te
 
 | Version | Planned focus |
 | --- | --- |
-| **v1.2** | Everyday usability improvements, accessibility, and clearer account/data handling |
-| **v1.3** | More detailed reports and user-controlled data backup/restore |
 | **v2.0** | Target final major release: a thoroughly tested, dependable experience for everyday use |
 
 v2.0 is the planned final **major** version, not a promise that development will stop. Bug fixes, compatibility work, and security updates may continue afterward.
@@ -78,7 +106,7 @@ frontend/
   css/                 # Ordered visual layers and responsive styles
   js/
     core/              # Shared DOM references, state, categories, and formatting
-    features/          # Authentication, transactions, analytics, goals, charts
+    features/          # Authentication, transactions, reports, backups, goals, charts
     services/          # API communication
     ui/                # Language, theme, and install/version interactions
     app.js             # Application entry point
@@ -88,6 +116,7 @@ backend/BudgetApi/
   Controllers/         # HTTP endpoints
   Data/                # Entity Framework database context
   Models/              # Persistent data entities
+  Security/            # Password hashing for sign-in and protected backup restore
   Program.cs            # API startup and dependency configuration
 ```
 
@@ -116,7 +145,7 @@ Open [http://localhost:8080](http://localhost:8080). `localhost` is treated as a
 
 ## Data and privacy
 
-Registered account data is handled by the configured API and its SQLite database. Guest-mode data is temporary and is not synchronized. Older transactions that predate transaction dates remain visible, but are excluded from date-based reports and filters because their original dates are unknown.
+Registered account data is handled by the configured API and its SQLite database. Guest-mode data is temporary and is not synchronized. JSON backup files contain financial data; store them somewhere private and secure. Older transactions that predate transaction dates remain visible, but are excluded from date-based reports and filters because their original dates are unknown.
 
 This project is a personal budgeting tool, not a bank or a regulated financial service. Do not enter bank credentials or use it as a substitute for professional financial advice.
 

@@ -114,7 +114,8 @@ body.dark-theme {
 }
 
 .dark-theme .monthly-metric strong,
-.dark-theme .savings-goal-card-heading strong {
+.dark-theme .savings-goal-card-heading strong,
+.dark-theme .report-table {
     color: #d9e5dc;
 }
 
@@ -168,4 +169,51 @@ body.dark-theme {
 
 .dark-theme .expense-text {
     color: #ff8585;
+}
+
+.dark-theme button:focus-visible,
+.dark-theme input:focus-visible,
+.dark-theme select:focus-visible {
+    outline-color: #91e2b9;
+}
+
+.dark-theme .monthly-category-report h3,
+.dark-theme .data-tools h3,
+.dark-theme .report-table tfoot th,
+.dark-theme .report-table tfoot td {
+    color: #e3eee6;
+}
+
+.dark-theme .report-table-container,
+.dark-theme .data-tools {
+    color: #d9e5dc;
+    background: #202c24;
+    border-color: #334238;
+}
+
+.dark-theme .report-table th,
+.dark-theme .report-table td {
+    border-color: #334238;
+}
+
+.dark-theme .report-table thead th,
+.dark-theme .data-tools > p,
+.dark-theme .restore-panel label {
+    color: #9bab9f;
+}
+
+.dark-theme .password-visibility-btn {
+    color: #9be0b8;
+    background: #203b2c;
+    border-color: #315d43;
+}
+
+.dark-theme .auth-message,
+.dark-theme .backup-message {
+    color: #91e2b9;
+}
+
+.dark-theme .auth-message.is-error,
+.dark-theme .backup-message.is-error {
+    color: #ffaaaa;
 }

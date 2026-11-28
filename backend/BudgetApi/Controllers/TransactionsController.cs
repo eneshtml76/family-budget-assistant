@@ -41,7 +41,8 @@ public class TransactionsController : ControllerBase
             return BadRequest("A valid description, amount, and transaction type are required.");
         }
 
-        newTransaction.CreatedAt = DateTime.UtcNow;
+        newTransaction.CreatedAt ??= DateTime.UtcNow;
+        NormalizeCreatedAt(newTransaction);
         _context.Transactions.Add(newTransaction);
         await _context.SaveChangesAsync();
         return Ok(newTransaction);
@@ -65,6 +66,10 @@ public class TransactionsController : ControllerBase
         transaction.Amount = updatedTransaction.Amount;
         transaction.Type = updatedTransaction.Type;
         transaction.Category = updatedTransaction.Category;
+        if (updatedTransaction.CreatedAt.HasValue)
+        {
+            transaction.CreatedAt = updatedTransaction.CreatedAt;
+        }
         NormalizeCreatedAt(transaction);
         await _context.SaveChangesAsync();
         return Ok(transaction);

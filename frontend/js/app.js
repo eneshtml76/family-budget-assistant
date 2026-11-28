@@ -1,4 +1,5 @@
 import { initializeAuthentication } from "./features/authentication.js";
+import { initializeBackupTools } from "./features/backup.js";
 import { initializeFamilyGuide } from "./features/family-guide.js";
 import { initializeLoanSimulator } from "./features/loan-simulator.js";
 import { initializeSavingsGoals } from "./features/savings-goals.js";
@@ -13,5 +14,6 @@ initializeSavingsGoals();
 initializeLoanSimulator();
 initializeFamilyGuide();
 initializeLanguage();
+initializeBackupTools();
 initializeAppInstallation();
 initializeAuthentication();
