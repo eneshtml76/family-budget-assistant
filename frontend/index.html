@@ -34,9 +34,25 @@
             <h2 id="authTitle">🔐 Hesap Girişi</h2>
             <div class="header-actions">
                 <button class="theme-toggle" type="button" aria-label="Koyu temayı aç">🌙</button>
-                <button id="authLangBtn" class="lang-btn" type="button">EN</button>
+                <button id="authLangBtn" class="lang-btn" type="button" aria-label="Dil Türkçe; İngilizceye geç">
+                    <span class="lang-option is-current" data-language-option="tr" aria-hidden="true">TR</span>
+                    <span class="lang-divider" aria-hidden="true">/</span>
+                    <span class="lang-option" data-language-option="en" aria-hidden="true">EN</span>
+                </button>
             </div>
         </header>
+        <div class="currency-toolbar">
+            <label class="currency-setting">
+                <span data-currency-label>Görüntü para birimi</span>
+                <select data-currency-select aria-label="Görüntü para birimi">
+                    <option value="TRY">TRY · TL</option>
+                    <option value="USD">USD · $</option>
+                    <option value="EUR">EUR · €</option>
+                </select>
+            </label>
+            <p class="currency-note" data-currency-note>Tutar girişleri TL; USD/EUR yalnızca gösterimi dönüştürür.</p>
+            <span class="currency-status" data-currency-status role="status" aria-live="polite"></span>
+        </div>
         <p id="authSubtitle" class="subtitle">Verilerinin kalıcı olması için giriş yap veya yeni hesap oluştur.</p>
 
         <p id="authMessage" class="auth-message" role="alert" aria-live="assertive"></p>
@@ -144,10 +160,26 @@
                         <span aria-hidden="true">↓</span>
                         <span id="exportButtonLabel">İndir</span>
                     </button>
-                    <button id="languageButton" class="lang-btn" type="button">EN</button>
+                    <button id="languageButton" class="lang-btn" type="button" aria-label="Dil Türkçe; İngilizceye geç">
+                        <span class="lang-option is-current" data-language-option="tr" aria-hidden="true">TR</span>
+                        <span class="lang-divider" aria-hidden="true">/</span>
+                        <span class="lang-option" data-language-option="en" aria-hidden="true">EN</span>
+                    </button>
                     <button id="logoutBtn" class="logout-btn" type="button">Çıkış</button>
                 </div>
             </header>
+            <div class="currency-toolbar">
+                <label class="currency-setting">
+                    <span data-currency-label>Görüntü para birimi</span>
+                    <select data-currency-select aria-label="Görüntü para birimi">
+                        <option value="TRY">TRY · TL</option>
+                        <option value="USD">USD · $</option>
+                        <option value="EUR">EUR · €</option>
+                    </select>
+                </label>
+                <p class="currency-note" data-currency-note>Tutar girişleri TL; USD/EUR yalnızca gösterimi dönüştürür.</p>
+                <span class="currency-status" data-currency-status role="status" aria-live="polite"></span>
+            </div>
             
             <section class="balance-card">
                 <span id="balanceTitle" class="balance-label">Toplam Bakiye</span>
@@ -316,6 +348,7 @@
                     <li id="releaseItemV13a">Aylık kategori harcamalarını önceki ayla karşılaştırma</li>
                     <li id="releaseItemV13b">İşlem ve birikim hedefleri için JSON yedekleme</li>
                     <li id="releaseItemV13c">Yedekten güvenli, onaylı geri yükleme</li>
+                    <li id="releaseItemV13d">İsteğe bağlı USD/EUR kur gösterimi; kayıtlar TL olarak korunur</li>
                 </ul>
             </article>
 
@@ -366,7 +399,7 @@
                 <span id="roadmapLabel">ÜRÜN YOL HARİTASI</span>
                 <ul>
                     <li><strong>v1.2</strong><span id="roadmapV12">Yayınlandı: Günlük kullanım ve erişilebilirlik</span></li>
-                    <li><strong>v1.3</strong><span id="roadmapV13">Yayınlandı: Raporlar ve veri yedekleme</span></li>
+                    <li><strong>v1.3</strong><span id="roadmapV13">Yayınlandı: Raporlar, yedekleme ve döviz görünümü</span></li>
                     <li><strong>v2.0</strong><span id="roadmapV20">Uzun vadeli hedef: kapsamlı, güvenilir ana sürüm</span></li>
                 </ul>
                 <p id="roadmapDisclaimer">Planlanan özellikler kullanıcı geri bildirimine göre değişebilir. v2.0 son büyük sürüm hedefidir; gerekli bakım ve güvenlik güncellemeleri sonrasında da devam edebilir.</p>

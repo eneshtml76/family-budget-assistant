@@ -5,7 +5,19 @@ export function currentMonthValue(date = new Date()) {
 }
 
 export function formatMoney(value, language = state.currentLang) {
-    return Number(value || 0).toLocaleString(language === "tr" ? "tr-TR" : "en-US") + " TL";
+    const amount = Number(value || 0);
+    if (state.currentCurrency === "TRY") {
+        return amount.toLocaleString(language === "tr" ? "tr-TR" : "en-US") + " TL";
+    }
+
+    const rate = state.currencyRates[state.currentCurrency];
+    if (!Number.isFinite(rate)) throw new Error("The selected currency rate is unavailable.");
+    return new Intl.NumberFormat(language === "tr" ? "tr-TR" : "en-US", {
+        style: "currency",
+        currency: state.currentCurrency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    }).format(amount * rate);
 }
 
 export function localDateValue(date) {

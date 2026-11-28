@@ -123,7 +123,7 @@ export async function loadTransactions() {
             }
         });
 
-        totalBalance.textContent = state.balance.toLocaleString("tr-TR") + " TL";
+        totalBalance.textContent = formatMoney(state.balance);
         renderMonthlyAnalysis(transactions);
         renderFilteredTransactions();
         renderCategorySummary(transactions);
@@ -278,6 +278,17 @@ export function initializeTransactions() {
     renderCategoryOptions();
 
     if (exportButton) exportButton.addEventListener("click", downloadTransactions);
+    window.addEventListener("budget:currencychange", () => {
+        if (!state.transactionsLoaded) return;
+        totalBalance.textContent = formatMoney(state.balance);
+        const totalIncome = state.currentTransactions
+            .filter((item) => item.type === "gelir")
+            .reduce((total, item) => total + item.amount, 0);
+        renderMonthlyAnalysis(state.currentTransactions);
+        renderFilteredTransactions();
+        renderCategorySummary(state.currentTransactions);
+        renderBudgetPlan(state.currentTransactions, totalIncome, state.balance);
+    });
     if (cancelEditButton) cancelEditButton.addEventListener("click", resetTransactionForm);
     if (addButton) {
         addButton.addEventListener("click", async () => {

@@ -152,7 +152,7 @@ export function renderCategorySummary(transactions) {
         label.className = "category-name";
         label.textContent = categories[categoryId].icon + " " + categoryLabel(categoryId);
         const amountLabel = document.createElement("strong");
-        amountLabel.textContent = total.toLocaleString("tr-TR") + " TL";
+        amountLabel.textContent = formatMoney(total);
         row.append(label, amountLabel);
         categorySummary.appendChild(row);
     });
@@ -192,8 +192,8 @@ export function renderMonthlyAnalysis(transactions) {
         if (previous === 0) {
             if (current === 0) return state.currentLang === "tr" ? label + ": değişmedi" : label + ": unchanged";
             return state.currentLang === "tr"
-                ? label + ": " + formatMoney(current) + " (önceki ay 0 TL)"
-                : label + ": " + formatMoney(current) + " (0 TL last month)";
+                ? label + ": " + formatMoney(current) + " (önceki ay " + formatMoney(0) + ")"
+                : label + ": " + formatMoney(current) + " (" + formatMoney(0) + " last month)";
         }
         const change = ((current - previous) / previous) * 100;
         const direction = change > 0
@@ -234,8 +234,8 @@ export function renderMonthlyAnalysis(transactions) {
 function updateBudgetRule(actual, target, amountElement, meter, meterFill, trLabel, enLabel) {
     const progress = target > 0 ? Math.max(0, Math.min(100, (actual / target) * 100)) : 0;
     amountElement.textContent = state.currentLang === "tr"
-        ? trLabel + " " + actual.toLocaleString("tr-TR") + " / hedef " + target.toLocaleString("tr-TR") + " TL"
-        : enLabel + " " + actual.toLocaleString("en-US") + " / target " + target.toLocaleString("en-US") + " TL";
+        ? trLabel + " " + formatMoney(actual) + " / hedef " + formatMoney(target)
+        : enLabel + " " + formatMoney(actual) + " / target " + formatMoney(target);
     meter.setAttribute("aria-valuenow", progress.toFixed(0));
     meterFill.style.width = progress + "%";
     meter.closest(".budget-rule").classList.toggle("is-over", target > 0 && actual > target);

@@ -65,9 +65,80 @@ body {
     border-color: #e4eae3;
 }
 
+.lang-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 76px;
+    min-height: 36px;
+    color: #355849;
+    background: #eaf4ed;
+    border-color: #b7d5c2;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.lang-option {
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
+.lang-option.is-current {
+    color: #fff;
+    background: #16835d;
+}
+
+.lang-divider {
+    color: #698276;
+}
+
+.currency-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px 12px;
+    margin: -5px 0 16px;
+}
+
+.currency-setting {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #47574e;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.currency-setting select {
+    min-width: 104px;
+    min-height: 34px;
+    padding: 6px 9px;
+    color: #263a30;
+    background: #f3f6f2;
+    border: 1px solid #cbd9ce;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.currency-note,
+.currency-status {
+    color: #708078;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.currency-status.is-error {
+    color: #b54747;
+}
+
 .lang-btn:hover {
     color: #123d2e;
-    background: #e8f3ec;
+    background: #dcefe2;
+}
+
+.lang-btn:hover .lang-option.is-current {
+    color: #fff;
 }
 
 .logout-btn {

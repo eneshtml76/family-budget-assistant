@@ -136,6 +136,9 @@ export async function loadSavingsGoals() {
 }
 
 export function initializeSavingsGoals() {
+    window.addEventListener("budget:currencychange", () => {
+        if (state.savingsGoalsLoaded) renderSavingsGoals(state.currentSavingsGoals);
+    });
     if (showGoalFormButton) {
         showGoalFormButton.addEventListener("click", () => {
             goalForm.classList.toggle("hidden");

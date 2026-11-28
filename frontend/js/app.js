@@ -5,6 +5,7 @@ import { initializeLoanSimulator } from "./features/loan-simulator.js";
 import { initializeSavingsGoals } from "./features/savings-goals.js";
 import { initializeTransactions } from "./features/transactions.js";
 import { initializeAppInstallation } from "./ui/app-installation.js";
+import { initializeCurrency } from "./services/currency.js";
 import { initializeLanguage } from "./ui/language.js";
 import { initializeTheme } from "./ui/theme.js";
 
@@ -17,3 +18,4 @@ initializeLanguage();
 initializeBackupTools();
 initializeAppInstallation();
 initializeAuthentication();
+initializeCurrency();

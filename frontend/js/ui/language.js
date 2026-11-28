@@ -4,6 +4,7 @@ import { renderMonthlyAnalysis } from "../features/analytics.js";
 import { loadSavingsGoals, renderSavingsGoals } from "../features/savings-goals.js";
 import { renderCategoryFilterOptions, renderCategoryOptions, renderFilteredTransactions, loadTransactions } from "../features/transactions.js";
 import { applyTheme } from "./theme.js";
+import { updateCurrencyControlLanguage } from "../services/currency.js";
 
 const {
     usernameInput,
@@ -87,8 +88,16 @@ export function toggleLanguage() {
     document.documentElement.lang = state.currentLang;
     document.getElementById("appFooterDock").setAttribute("aria-label", isTr ? "Uygulama bağlantıları" : "App links");
     versionBackdrop.setAttribute("aria-label", isTr ? "Sürüm geçmişini kapat" : "Close version history");
-    if (languageButton) languageButton.textContent = isTr ? "EN" : "TR";
-    if (authLangBtn) authLangBtn.textContent = isTr ? "EN" : "TR";
+    [languageButton, authLangBtn].filter(Boolean).forEach((button) => {
+        button.querySelectorAll("[data-language-option]").forEach((option) => {
+            option.classList.toggle("is-current", option.dataset.languageOption === state.currentLang);
+        });
+        button.setAttribute("aria-label", isTr
+            ? "Dil Türkçe; İngilizceye geç"
+            : "Language English; switch to Turkish");
+        button.title = isTr ? "Switch to English" : "Türkçeye geç";
+    });
+    updateCurrencyControlLanguage();
     if (authTitle) authTitle.textContent = isTr ? "🔐 Hesap Girişi" : "🔐 Account Login";
     if (authSubtitle) authSubtitle.textContent = isTr
     ? "Verilerinin kalıcı olması için giriş yap veya yeni hesap oluştur."
@@ -219,6 +228,9 @@ export function toggleLanguage() {
     document.getElementById("releaseItemV13c").textContent = isTr
         ? "Yedekten güvenli, onaylı geri yükleme"
         : "Safe, confirmed backup restoration";
+    document.getElementById("releaseItemV13d").textContent = isTr
+        ? "İsteğe bağlı USD/EUR kur gösterimi; kayıtlar TL olarak korunur"
+        : "Optional USD/EUR conversion; saved amounts remain in TRY";
     document.getElementById("releaseStatusV12").textContent = isTr ? "ÖNCEKİ SÜRÜM" : "PREVIOUS RELEASE";
     document.getElementById("releaseTitleV12").textContent = isTr
         ? "v1.2 · Daha kolay günlük kullanım"
@@ -266,8 +278,8 @@ export function toggleLanguage() {
         ? "Yayınlandı: Günlük kullanım ve erişilebilirlik"
         : "Released: Everyday usability and accessibility";
     document.getElementById("roadmapV13").textContent = isTr
-        ? "Yayınlandı: Raporlar ve veri yedekleme"
-        : "Released: Reports and data backup";
+        ? "Yayınlandı: Raporlar, yedekleme ve döviz görünümü"
+        : "Released: Reports, backup, and currency display";
     document.getElementById("roadmapV20").textContent = isTr
         ? "Kapsamlı, güvenilir ana sürüm hedefi"
         : "Target for a complete, dependable major release";

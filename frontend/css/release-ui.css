@@ -381,6 +381,15 @@ body {
         font-size: 10px;
     }
 
+    .lang-btn {
+        min-width: 70px;
+    }
+
+    .currency-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .monthly-analysis-heading {
         align-items: flex-start;
         flex-direction: column;

@@ -35,6 +35,7 @@ The dashboard screenshot uses illustrative guest-mode data; no real user data is
 - **JSON backup and restore:** Download transaction and savings-goal backups, then restore them to guest mode or a registered account. Restoring replaces the current data; account restores require the account password. Backup files contain financial data and should be stored securely.
 - **50/30/20 budget guide:** Compare recorded spending with suggested needs, wants, and savings allocations.
 - **Loan simulator:** Estimate monthly payments, total repayment, and interest.
+- **Optional currency display:** Keep TRY as the default or view amounts in USD/EUR using dated reference exchange rates. Saved amounts remain in TRY; online rates are required for conversion.
 - **Installable PWA:** Install from supported Android and desktop browsers, or add the site to the iOS/iPadOS Home Screen.
 - **Responsive interface:** Layouts adapt to desktop, tablet, and phone screens.
 - **Light and dark themes:** The selected theme is remembered in the browser.
@@ -61,8 +62,10 @@ Backup files contain financial data and are not encrypted. Store them somewhere 
 ### v1.3 — Reports and data backup
 
 - Added monthly category reports comparing selected-month spending with the previous month.
+- Added optional USD/EUR display conversion while keeping stored amounts in TRY.
 - Added JSON backups for transactions and savings goals, with validated and confirmed restoration.
 - Added an atomic account restore endpoint that verifies the account password before replacing records.
+- Added optional USD/EUR display conversion while keeping stored amounts in TRY.
 
 ### v1.2 — Easier everyday use
 

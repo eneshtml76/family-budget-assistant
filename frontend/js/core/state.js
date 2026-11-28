@@ -8,5 +8,8 @@ export const state = {
     savingsGoalsLoaded: false,
     editingTransactionId: null,
     balance: 0,
-    currentLang: "tr"
+    currentLang: "tr",
+    currentCurrency: "TRY",
+    currencyRates: { TRY: 1 },
+    currencyRateDate: null
 };

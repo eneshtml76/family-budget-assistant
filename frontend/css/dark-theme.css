@@ -70,6 +70,30 @@ body.dark-theme {
     background: #324338;
 }
 
+.dark-theme .lang-btn .lang-option.is-current {
+    color: #10251a;
+    background: #75d6a1;
+}
+
+.dark-theme .currency-setting {
+    color: #d2dfd5;
+}
+
+.dark-theme .currency-setting select {
+    color: #e4ede7;
+    background: #202c24;
+    border-color: #39483e;
+}
+
+.dark-theme .currency-note,
+.dark-theme .currency-status {
+    color: #9bab9f;
+}
+
+.dark-theme .currency-status.is-error {
+    color: #ffaaaa;
+}
+
 .dark-theme .logout-btn {
     color: #ffaaaa;
     background: #482b2b;
