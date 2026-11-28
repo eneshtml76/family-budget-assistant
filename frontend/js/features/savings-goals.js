@@ -41,7 +41,7 @@ export function renderSavingsGoals(goals) {
                 if (state.currentUser.isGuest) {
                     state.guestSavingsGoals = state.guestSavingsGoals.filter((item) => item.id !== goal.id);
                 } else {
-                    await removeSavingsGoal(goal.id, state.currentUser.userId);
+                    await removeSavingsGoal(goal.id);
                 }
                 await loadSavingsGoals();
             } catch (error) {
@@ -99,7 +99,7 @@ export function renderSavingsGoals(goals) {
                             : item
                     );
                 } else {
-                    await contributeToSavingsGoal(goal.id, state.currentUser.userId, contributionAmount);
+                    await contributeToSavingsGoal(goal.id, contributionAmount);
                 }
                 await loadSavingsGoals();
             } catch (error) {
@@ -121,7 +121,7 @@ export async function loadSavingsGoals() {
     try {
         state.currentSavingsGoals = state.currentUser.isGuest
             ? state.guestSavingsGoals
-            : await fetchSavingsGoals(state.currentUser.userId);
+            : await fetchSavingsGoals();
         state.savingsGoalsLoaded = true;
         renderSavingsGoals(state.currentSavingsGoals);
         return true;
@@ -165,7 +165,6 @@ export function initializeSavingsGoals() {
                     });
                 } else {
                     await createSavingsGoal({
-                        userId: state.currentUser.userId,
                         name,
                         targetAmount
                     });

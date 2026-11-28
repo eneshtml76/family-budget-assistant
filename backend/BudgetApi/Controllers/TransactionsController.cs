@@ -1,5 +1,7 @@
 using BudgetApi.Data;
 using BudgetApi.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +9,7 @@ namespace BudgetApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TransactionsController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -16,10 +19,13 @@ public class TransactionsController : ControllerBase
         _context = context;
     }
 
-    // GET: api/transactions/{userId}
-    [HttpGet("{userId}")]
-    public async Task<IActionResult> GetAllByUser(int userId)
+    // GET: api/transactions
+    [HttpGet]
+    public async Task<IActionResult> GetAllByUser()
     {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized();
+
         var transactions = await _context.Transactions
             .Where(t => t.UserId == userId)
             .ToListAsync();
@@ -32,15 +38,27 @@ public class TransactionsController : ControllerBase
 
     // POST: api/transactions
     [HttpPost]
-    public async Task<IActionResult> Add(Transaction newTransaction)
+    public async Task<IActionResult> Add(TransactionRequest request)
     {
-        if (string.IsNullOrWhiteSpace(newTransaction.Description) ||
-            newTransaction.Amount <= 0 ||
-            (newTransaction.Type != "gelir" && newTransaction.Type != "gider"))
+        if (!TryGetUserId(out var userId))
+            return Unauthorized();
+
+        if (string.IsNullOrWhiteSpace(request.Description) ||
+            request.Amount <= 0 ||
+            (request.Type != "gelir" && request.Type != "gider"))
         {
             return BadRequest("A valid description, amount, and transaction type are required.");
         }
 
+        var newTransaction = new Transaction
+        {
+            UserId = userId,
+            Description = request.Description.Trim(),
+            Amount = request.Amount,
+            Type = request.Type,
+            Category = request.Category,
+            CreatedAt = request.CreatedAt
+        };
         newTransaction.CreatedAt ??= DateTime.UtcNow;
         NormalizeCreatedAt(newTransaction);
         _context.Transactions.Add(newTransaction);
@@ -50,11 +68,14 @@ public class TransactionsController : ControllerBase
 
     // PUT: api/transactions/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Transaction updatedTransaction)
+    public async Task<IActionResult> Update(int id, TransactionRequest updatedTransaction)
     {
-        var transaction = await _context.Transactions.FindAsync(id);
+        if (!TryGetUserId(out var userId))
+            return Unauthorized();
+
+        var transaction = await _context.Transactions
+            .FirstOrDefaultAsync(item => item.Id == id && item.UserId == userId);
         if (transaction == null) return NotFound();
-        if (transaction.UserId != updatedTransaction.UserId) return Forbid();
         if (string.IsNullOrWhiteSpace(updatedTransaction.Description) ||
             updatedTransaction.Amount <= 0 ||
             (updatedTransaction.Type != "gelir" && updatedTransaction.Type != "gider"))
@@ -79,7 +100,11 @@ public class TransactionsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var transaction = await _context.Transactions.FindAsync(id);
+        if (!TryGetUserId(out var userId))
+            return Unauthorized();
+
+        var transaction = await _context.Transactions
+            .FirstOrDefaultAsync(item => item.Id == id && item.UserId == userId);
         if (transaction == null) return NotFound();
 
         _context.Transactions.Remove(transaction);
@@ -93,5 +118,19 @@ public class TransactionsController : ControllerBase
         {
             transaction.CreatedAt = DateTime.SpecifyKind(transaction.CreatedAt.Value, DateTimeKind.Utc);
         }
+    }
+
+    private bool TryGetUserId(out int userId)
+    {
+        return int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
+    }
+
+    public sealed class TransactionRequest
+    {
+        public string Description { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Category { get; set; } = "other";
+        public DateTime? CreatedAt { get; set; }
     }
 }

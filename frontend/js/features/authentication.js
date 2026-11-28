@@ -45,6 +45,21 @@ function clearPasswordInput() {
 }
 
 export function initializeAuthentication() {
+    window.addEventListener("budget:auth-expired", () => {
+        state.currentUser = null;
+        state.currentTransactions = [];
+        state.currentSavingsGoals = [];
+        state.transactionsLoaded = false;
+        state.savingsGoalsLoaded = false;
+        checkSession();
+        showAuthMessage(
+            state.currentLang === "tr"
+                ? "Oturum süren doldu. Lütfen yeniden giriş yap."
+                : "Your session expired. Please sign in again.",
+            true
+        );
+    });
+
     [dom.usernameInput, dom.passwordInput].forEach((input) => {
         input.addEventListener("input", () => showAuthMessage(""));
         input.addEventListener("keydown", (event) => {
@@ -80,7 +95,7 @@ export function initializeAuthentication() {
     if (dom.registerBtn) {
         dom.registerBtn.addEventListener("click", async () => {
             const user = dom.usernameInput.value.trim();
-            const pass = dom.passwordInput.value.trim();
+            const pass = dom.passwordInput.value;
             if (!user || !pass) {
                 showAuthMessage(
                     state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin." : "Enter your username and password.",
@@ -112,7 +127,7 @@ export function initializeAuthentication() {
     if (dom.loginBtn) {
         dom.loginBtn.addEventListener("click", async () => {
             const user = dom.usernameInput.value.trim();
-            const pass = dom.passwordInput.value.trim();
+            const pass = dom.passwordInput.value;
             if (!user || !pass) {
                 showAuthMessage(
                     state.currentLang === "tr" ? "Kullanıcı adı ve şifre girin." : "Enter your username and password.",

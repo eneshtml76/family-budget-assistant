@@ -1,21 +1,51 @@
 using System.Security.Cryptography;
 using System.Text;
+using BudgetApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BudgetApi.Security;
 
-public static class PasswordHasher
+public sealed class PasswordHasher
 {
-    public static string Hash(string password)
+    private readonly IPasswordHasher<User> _passwordHasher;
+
+    public PasswordHasher(IPasswordHasher<User> passwordHasher)
     {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(bytes);
+        _passwordHasher = passwordHasher;
     }
 
-    public static bool Verify(string password, string expectedHash)
+    public string Hash(User user, string password)
     {
-        var actualBytes = Convert.FromBase64String(Hash(password));
-        var expectedBytes = Convert.FromBase64String(expectedHash);
-        return actualBytes.Length == expectedBytes.Length &&
-            CryptographicOperations.FixedTimeEquals(actualBytes, expectedBytes);
+        return _passwordHasher.HashPassword(user, password);
+    }
+
+    public PasswordVerificationResult Verify(User user, string password)
+    {
+        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+        if (result != PasswordVerificationResult.Failed)
+            return result;
+
+        return VerifyLegacyPassword(password, user.PasswordHash)
+            ? PasswordVerificationResult.SuccessRehashNeeded
+            : PasswordVerificationResult.Failed;
+    }
+
+    private static bool VerifyLegacyPassword(string password, string storedHash)
+    {
+        byte[] expectedHash;
+        try
+        {
+            expectedHash = Convert.FromBase64String(storedHash);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
+        if (expectedHash.Length != 32)
+            return false;
+
+        var actualHash = SHA256.HashData(Encoding.UTF8.GetBytes(password));
+        return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
     }
 }

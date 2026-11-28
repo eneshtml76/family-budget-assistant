@@ -199,7 +199,7 @@ async function confirmRestore() {
                 id: Date.now() + index
             }));
         } else {
-            await restoreBackup(state.currentUser.userId, state.currentUser.username, password, backup);
+            await restoreBackup(password, backup);
         }
 
         const [transactionsLoaded, goalsLoaded] = await Promise.all([

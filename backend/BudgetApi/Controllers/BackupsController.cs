@@ -1,6 +1,9 @@
 using BudgetApi.Data;
 using BudgetApi.Models;
 using BudgetApi.Security;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +11,7 @@ namespace BudgetApi.Controllers;
 
 [ApiController]
 [Route("api/backups")]
+[Authorize]
 public class BackupsController : ControllerBase
 {
     private static readonly HashSet<string> AllowedCategories = new(StringComparer.Ordinal)
@@ -17,17 +21,21 @@ public class BackupsController : ControllerBase
     };
 
     private readonly AppDbContext _context;
+    private readonly PasswordHasher _passwordHasher;
 
-    public BackupsController(AppDbContext context)
+    public BackupsController(AppDbContext context, PasswordHasher passwordHasher)
     {
         _context = context;
+        _passwordHasher = passwordHasher;
     }
 
-    [HttpPost("{userId:int}/restore")]
-    public async Task<IActionResult> Restore(int userId, BackupRestoreRequest request)
+    [HttpPost("restore")]
+    public async Task<IActionResult> Restore(BackupRestoreRequest request)
     {
-        if (userId <= 0 ||
-            request.SchemaVersion != 1 ||
+        if (!TryGetUserId(out var userId))
+            return Unauthorized();
+
+        if (request.SchemaVersion != 1 ||
             request.Transactions is null ||
             request.SavingsGoals is null ||
             request.Transactions.Count > 20000 ||
@@ -38,13 +46,16 @@ public class BackupsController : ControllerBase
 
         var user = await _context.Users.FirstOrDefaultAsync(item => item.Id == userId);
         if (user is null) return NotFound("The account was not found.");
-        if (string.IsNullOrWhiteSpace(request.Username) ||
-            string.IsNullOrEmpty(request.Password) ||
-            !string.Equals(user.Username, request.Username.Trim(), StringComparison.Ordinal) ||
-            !PasswordHasher.Verify(request.Password, user.PasswordHash))
+        if (string.IsNullOrEmpty(request.Password))
+            return Unauthorized("The account password is incorrect.");
+
+        var passwordVerification = _passwordHasher.Verify(user, request.Password);
+        if (passwordVerification == PasswordVerificationResult.Failed)
         {
             return Unauthorized("The account password is incorrect.");
         }
+        if (passwordVerification == PasswordVerificationResult.SuccessRehashNeeded)
+            user.PasswordHash = _passwordHasher.Hash(user, request.Password);
 
         if (request.Transactions.Any(item =>
                 item is null ||
@@ -106,7 +117,6 @@ public class BackupsController : ControllerBase
     public sealed class BackupRestoreRequest
     {
         public int SchemaVersion { get; set; }
-        public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public List<BackupTransaction>? Transactions { get; set; }
         public List<BackupSavingsGoal>? SavingsGoals { get; set; }
@@ -126,5 +136,10 @@ public class BackupsController : ControllerBase
         public string Name { get; set; } = string.Empty;
         public decimal TargetAmount { get; set; }
         public decimal SavedAmount { get; set; }
+    }
+
+    private bool TryGetUserId(out int userId)
+    {
+        return int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out userId);
     }
 }

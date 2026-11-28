@@ -14,6 +14,21 @@ const BASE_URL = configuredApiUrl
         ? "http://localhost:5098/api"
         : "https://family-budget-assistant-production.up.railway.app/api";
 
+async function authenticatedFetch(path, options = {}) {
+    const user = JSON.parse(localStorage.getItem("budgetUser") || "null");
+    const headers = new Headers(options.headers || {});
+    if (user?.token) {
+        headers.set("Authorization", `Bearer ${user.token}`);
+    }
+
+    const response = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+    if (response.status === 401 && user?.token) {
+        localStorage.removeItem("budgetUser");
+        window.dispatchEvent(new Event("budget:auth-expired"));
+    }
+    return response;
+}
+
 // Register a new user account on cloud SQLite
 export async function registerUser(username, password) {
     const response = await fetch(`${BASE_URL}/auth/register`, {
@@ -41,16 +56,16 @@ export async function loginUser(username, password) {
     return await response.json();
 }
 
-// Fetch all transactions for a specific user from cloud database
-export async function fetchTransactions(userId) {
-    const response = await fetch(`${BASE_URL}/transactions/${userId}`);
+// The API derives ownership from the bearer token.
+export async function fetchTransactions() {
+    const response = await authenticatedFetch("/transactions");
     if (!response.ok) throw new Error("Failed to fetch transactions");
     return await response.json();
 }
 
 // Create a new transaction on cloud database
 export async function createTransaction(transactionData) {
-    const response = await fetch(`${BASE_URL}/transactions`, {
+    const response = await authenticatedFetch("/transactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(transactionData)
@@ -61,7 +76,7 @@ export async function createTransaction(transactionData) {
 
 // Update a transaction, including its selected transaction date.
 export async function updateTransaction(id, transactionData) {
-    const response = await fetch(`${BASE_URL}/transactions/${id}`, {
+    const response = await authenticatedFetch(`/transactions/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(transactionData)
@@ -72,20 +87,20 @@ export async function updateTransaction(id, transactionData) {
 
 // Delete a transaction by ID from cloud database
 export async function removeTransaction(id) {
-    const response = await fetch(`${BASE_URL}/transactions/${id}`, {
+    const response = await authenticatedFetch(`/transactions/${id}`, {
         method: "DELETE"
     });
     if (!response.ok) throw new Error("Failed to delete transaction");
 }
 
-export async function fetchSavingsGoals(userId) {
-    const response = await fetch(`${BASE_URL}/savingsgoals/${userId}`);
+export async function fetchSavingsGoals() {
+    const response = await authenticatedFetch("/savingsgoals");
     if (!response.ok) throw new Error("Failed to fetch savings goals");
     return await response.json();
 }
 
 export async function createSavingsGoal(goalData) {
-    const response = await fetch(`${BASE_URL}/savingsgoals`, {
+    const response = await authenticatedFetch("/savingsgoals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(goalData)
@@ -94,28 +109,28 @@ export async function createSavingsGoal(goalData) {
     return await response.json();
 }
 
-export async function contributeToSavingsGoal(id, userId, contributionAmount) {
-    const response = await fetch(`${BASE_URL}/savingsgoals/${id}/contributions`, {
+export async function contributeToSavingsGoal(id, contributionAmount) {
+    const response = await authenticatedFetch(`/savingsgoals/${id}/contributions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, amount: contributionAmount })
+        body: JSON.stringify({ amount: contributionAmount })
     });
     if (!response.ok) throw new Error("Failed to update savings goal");
     return await response.json();
 }
 
-export async function removeSavingsGoal(id, userId) {
-    const response = await fetch(`${BASE_URL}/savingsgoals/${id}?userId=${encodeURIComponent(userId)}`, {
+export async function removeSavingsGoal(id) {
+    const response = await authenticatedFetch(`/savingsgoals/${id}`, {
         method: "DELETE"
     });
     if (!response.ok) throw new Error("Failed to delete savings goal");
 }
 
-export async function restoreBackup(userId, username, password, backup) {
-    const response = await fetch(`${BASE_URL}/backups/${userId}/restore`, {
+export async function restoreBackup(password, backup) {
+    const response = await authenticatedFetch("/backups/restore", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...backup, username, password })
+        body: JSON.stringify({ ...backup, password })
     });
     if (!response.ok) {
         const message = await response.text();

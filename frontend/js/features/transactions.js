@@ -107,7 +107,7 @@ export async function loadTransactions() {
     try {
         const transactions = state.currentUser.isGuest
             ? state.guestTransactions
-            : await fetchTransactions(state.currentUser.userId);
+            : await fetchTransactions();
 
         state.currentTransactions = transactions;
         state.transactionsLoaded = true;
@@ -306,7 +306,6 @@ export function initializeTransactions() {
 
             try {
                 const transactionData = {
-                    userId: state.currentUser.userId,
                     description: descValue,
                     amount: amnt,
                     type: typeValue,

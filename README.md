@@ -1,5 +1,6 @@
 # Family Budget Assistant
 
+[![Build](https://github.com/eneshtml76/family-budget-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/eneshtml76/family-budget-assistant/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v1.3-blue.svg)](https://github.com/eneshtml76/family-budget-assistant/tree/v1.3)
 [![Frontend](https://img.shields.io/badge/frontend-GitHub%20Pages-222222.svg)](https://eneshtml76.github.io/family-budget-assistant/)
@@ -65,7 +66,6 @@ Backup files contain financial data and are not encrypted. Store them somewhere 
 - Added optional USD/EUR display conversion while keeping stored amounts in TRY.
 - Added JSON backups for transactions and savings goals, with validated and confirmed restoration.
 - Added an atomic account restore endpoint that verifies the account password before replacing records.
-- Added optional USD/EUR display conversion while keeping stored amounts in TRY.
 
 ### v1.2 — Easier everyday use
 
@@ -90,6 +90,7 @@ Roadmap items are targets, not release commitments; scope may change based on te
 
 | Version | Planned focus |
 | --- | --- |
+| **v1.4** | Secure account and financial-data APIs with JWT authentication, stronger password hashing, authorization tests, and CI |
 | **v2.0** | Target final major release: a thoroughly tested, dependable experience for everyday use |
 
 v2.0 is the planned final **major** version, not a promise that development will stop. Bug fixes, compatibility work, and security updates may continue afterward.
@@ -125,6 +126,47 @@ backend/BudgetApi/
 
 The frontend uses native browser modules and remains a static GitHub Pages site; no build step or bundler is required. Stylesheets load in the order listed by `frontend/index.html`, and the service worker precaches the application shell for offline launch.
 
+## API endpoints
+
+All account-specific endpoints require `Authorization: Bearer <token>`. The API derives the account ID from the token rather than trusting a user ID supplied by the caller.
+
+| Method | Endpoint | Authentication | Description |
+| --- | --- | --- | --- |
+| `POST` | `/api/auth/register` | No | Register and receive an access token |
+| `POST` | `/api/auth/login` | No | Sign in and receive an access token |
+| `GET` | `/api/transactions` | Bearer token | List the caller's transactions |
+| `POST` | `/api/transactions` | Bearer token | Add a transaction for the caller |
+| `PUT` | `/api/transactions/{id}` | Bearer token | Update an owned transaction |
+| `DELETE` | `/api/transactions/{id}` | Bearer token | Delete an owned transaction |
+| `GET` | `/api/savingsgoals` | Bearer token | List the caller's savings goals |
+| `POST` | `/api/savingsgoals` | Bearer token | Create a savings goal for the caller |
+| `POST` | `/api/savingsgoals/{id}/contributions` | Bearer token | Add a contribution to an owned goal |
+| `DELETE` | `/api/savingsgoals/{id}` | Bearer token | Delete an owned savings goal |
+| `POST` | `/api/backups/restore` | Bearer token | Restore a backup to the caller's account |
+
+Swagger UI is available at `/swagger`, with the OpenAPI JSON at `/swagger/v1/swagger.json`. Login and registration requests are limited to five per minute per client IP.
+
+```mermaid
+flowchart LR
+    Browser["PWA frontend"]
+    API["ASP.NET Core API<br/>JWT authentication"]
+    Auth["AuthController<br/>Password hashing / token issue"]
+    Transactions["TransactionsController<br/>Claim-scoped access"]
+    Goals["SavingsGoalsController<br/>Claim-scoped access"]
+    Backups["BackupsController<br/>Authenticated restore"]
+    DB[("SQLite<br/>Users, transactions, savings goals")]
+
+    Browser -->|"JSON + Bearer token"| API
+    API --> Auth
+    API --> Transactions
+    API --> Goals
+    API --> Backups
+    Auth --> DB
+    Transactions --> DB
+    Goals --> DB
+    Backups --> DB
+```
+
 ## Run locally
 
 ### 1. Start the API
@@ -133,6 +175,8 @@ The frontend uses native browser modules and remains a static GitHub Pages site;
 cd backend\BudgetApi
 dotnet run
 ```
+
+Development runs generate an ephemeral JWT signing key, so tokens are invalidated when the API restarts. Production must configure `Jwt__Key` to a persistent random secret of at least 32 bytes before starting the API.
 
 The frontend's local API configuration expects the API at `http://localhost:5098`. If your local API uses another port, update `frontend/js/services/api.js` or configure the local launch URL accordingly. The API creates its SQLite database automatically. Set `BUDGET_DB_PATH` to choose a different database file.
 
@@ -145,6 +189,16 @@ python -m http.server 8080 --directory frontend
 ```
 
 Open [http://localhost:8080](http://localhost:8080). `localhost` is treated as a secure context by modern browsers, so the service worker can be tested locally.
+
+## Tests
+
+Run the API integration tests with:
+
+```powershell
+dotnet test backend\BudgetApi.Tests\BudgetApi.Tests.csproj
+```
+
+GitHub Actions runs the API build and test suite on each push and pull request.
 
 ## Data and privacy
 

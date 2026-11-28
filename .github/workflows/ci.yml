@@ -1,0 +1,20 @@
+name: .NET CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 11.0.x
+      - name: Restore
+        run: dotnet restore backend/BudgetApi.Tests/BudgetApi.Tests.csproj
+      - name: Build
+        run: dotnet build backend/BudgetApi.Tests/BudgetApi.Tests.csproj --configuration Release --no-restore
+      - name: Test
+        run: dotnet test backend/BudgetApi.Tests/BudgetApi.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"

@@ -1,11 +1,26 @@
 @BudgetApi_HostAddress = http://localhost:5098
 
-GET {{BudgetApi_HostAddress}}/openapi/v1.json
-Accept: application/json
+POST {{BudgetApi_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo",
+  "password": "replace-with-a-strong-password"
+}
 
 ###
 
-GET {{BudgetApi_HostAddress}}/weatherforecast/
+POST {{BudgetApi_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "demo",
+  "password": "replace-with-a-strong-password"
+}
+
+###
+
+GET {{BudgetApi_HostAddress}}/swagger/v1/swagger.json
 Accept: application/json
 
 ###
